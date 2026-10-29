@@ -1,0 +1,18 @@
+--- src/algorithms/tracking/CKFTrackingConfig.h
++++ localDetEICrecon/experimental/telescope/algorithms/tracking/CKFTrackingConfig.h
+@@ -6,12 +6,13 @@
+ 
+ #include <vector>
+ 
+-namespace eicrecon {
++namespace eicrecon::telescope {
+ struct CKFTrackingConfig {
++  bool electronHypothesis = false; // Upstream pion default; explicit electron test override.
+   std::vector<double> etaBins                    = {};
+   std::vector<double> chi2CutOff                 = {15.};
+   std::vector<std::size_t> numMeasurementsCutOff = {10};
+ 
+   std::size_t numMeasurementsMin = 4;
+ };
+-} // namespace eicrecon
++} // namespace eicrecon::telescope

@@ -1,0 +1,41 @@
+{
+  "schema": "native-workflow-v1",
+  "description": "64-event pencil-beam single-L1 Global Y engineering smoke. No production activation or physics-validation claim.",
+  "geometry": {
+    "source": "native_barrel",
+    "initial": "nominal",
+    "global_y_mm": {
+      "1": 0.08
+    },
+    "global_rotation_vector_rad": {}
+  },
+  "simulation": {
+    "particle": "e-",
+    "energy_gev": 1.0,
+    "beam": "pencil",
+    "events": 64,
+    "seed": 2026102511,
+    "position_mm": [
+      249.0,
+      0.0,
+      0.0
+    ],
+    "direction": [
+      1.0,
+      0.0,
+      0.0
+    ]
+  },
+  "alignment": {
+    "config": "validation/telescope_alignment/l1_global_y.json",
+    "chi2_cut": 1000.0
+  },
+  "controller": {
+    "validation_mode": "diagnostic",
+    "maximum_corrections": 1
+  },
+  "environment": {
+    "kind": "fixed-docker",
+    "image": "sha256:67c914295a92396040c3051360d70786df9c1ee8458264ad0b83cd1a8ccf3d05"
+  }
+}

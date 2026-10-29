@@ -1,0 +1,1 @@
+"""Independent geometry research task."""

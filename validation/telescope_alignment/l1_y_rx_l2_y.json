@@ -1,0 +1,30 @@
+{
+  "scope": "experimental_zero_field_material_free",
+  "convention": "physical Global left increments, translations mm and rotations rad; current sensitive-center pivot",
+  "parameters": [
+    {
+      "system": 31,
+      "layer": 1,
+      "axis": "global_y",
+      "label": 700102
+    },
+    {
+      "system": 31,
+      "layer": 1,
+      "axis": "global_rx",
+      "label": 700104,
+      "unit": "rad",
+      "pivot": "sensitive_surface_center",
+      "composition": "left_global_exp",
+      "geometry_id": 216173056991691039,
+      "volume_id": 272631839
+    },
+    {
+      "system": 31,
+      "layer": 2,
+      "axis": "global_y",
+      "label": 700202
+    }
+  ],
+  "fixed": "All unselected sensor poses and components; L0/L3/L4 fixed"
+}

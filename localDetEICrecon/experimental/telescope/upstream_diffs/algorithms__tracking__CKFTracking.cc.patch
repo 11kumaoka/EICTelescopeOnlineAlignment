@@ -1,0 +1,66 @@
+--- src/algorithms/tracking/CKFTracking.cc
++++ localDetEICrecon/experimental/telescope/algorithms/tracking/CKFTracking.cc
+@@ -67,8 +67,8 @@
+ // IWYU pragma: no_include <Acts/Utilities/detail/ContextType.hpp>
+ // IWYU pragma: no_include <Acts/Utilities/detail/ContainerIterator.hpp>
+ 
+-#include "ActsGeometryProvider.h"
+-#include "extensions/edm4eic/EDM4eicToActs.h"
++#include <algorithms/tracking/ActsGeometryProvider.h>
++#include "../../extensions/edm4eic/EDM4eicToActs.h"
+ #include "extensions/spdlog/SpdlogFormatters.h" // IWYU pragma: keep
+ #include "extensions/spdlog/SpdlogToActs.h"
+ 
+@@ -126,7 +126,7 @@
+ 
+ } // anonymous namespace
+ 
+-namespace eicrecon {
++namespace eicrecon::telescope {
+ 
+ using namespace Acts::UnitLiterals;
+ 
+@@ -142,7 +142,7 @@
+         .numMeasurementsCutOff = {m_cfg.numMeasurementsCutOff.begin(),
+                                   m_cfg.numMeasurementsCutOff.end()}}},
+   };
+-  m_trackFinderFunc = CKFTracking::makeCKFTrackingFunction(
++  m_trackFinderFunc = eicrecon::CKFTracking::makeCKFTrackingFunction(
+       m_geoSvc->trackingGeometry(), m_geoSvc->getFieldProvider(), acts_logger());
+ }
+ 
+@@ -187,14 +187,13 @@
+     }
+ 
+     // Construct a perigee surface as the target surface
+-    auto pSurface = Acts::Surface::makeShared<const Acts::PerigeeSurface>(Acts::Vector3(0, 0, 0));
++    auto pSurface = Acts::Surface::makeShared<const Acts::PerigeeSurface>(Acts::Vector3(track_seed.getPerigee().x, track_seed.getPerigee().y, track_seed.getPerigee().z));
+ 
+     // Create parameters
+-    acts_init_trk_params.emplace_back(pSurface, params, cov, Acts::ParticleHypothesis::pion());
+-  }
+-
+-  //// Construct a perigee surface as the target surface
+-  auto pSurface = Acts::Surface::makeShared<Acts::PerigeeSurface>(Acts::Vector3{0., 0., 0.});
++    acts_init_trk_params.emplace_back(pSurface, params, cov, (m_cfg.electronHypothesis ? Acts::ParticleHypothesis::electron() : Acts::ParticleHypothesis::pion()));
++  }
++
++  // Each output uses the same reference surface as its input seed.
+ 
+   // Convert algorithm log level to Acts log level for local logger
+   const auto spdlog_level = static_cast<spdlog::level::level_enum>(this->level());
+@@ -299,7 +298,7 @@
+       }
+ 
+       auto extrapolationResult = Acts::extrapolateTrackToReferenceSurface(
+-          track, *pSurface, extrapolator, extrapolationOptions,
++          track, acts_init_trk_params.at(iseed).referenceSurface(), extrapolator, extrapolationOptions,
+           Acts::TrackExtrapolationStrategy::firstOrLast, acts_logger());
+ 
+       if (!extrapolationResult.ok()) {
+@@ -321,4 +320,4 @@
+   *output_tracks       = new Acts::ConstVectorTrackContainer(std::move(*trackContainer));
+ }
+ 
+-} // namespace eicrecon
++} // namespace eicrecon::telescope

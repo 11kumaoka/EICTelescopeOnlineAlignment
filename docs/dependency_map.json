@@ -1,0 +1,729 @@
+{
+  "scope": "Conservative local dependency map: function-local imports, dynamic configuration, CMake and quoted includes. Installed components come from pinned image.",
+  "python_local_imports": {
+    "alignment/__init__.py": [],
+    "alignment/pede.py": [],
+    "calibration/__init__.py": [],
+    "calibration/convergence.py": [],
+    "calibration/native_controller.py": [
+      "calibration/convergence.py",
+      "calibration/native_operations.py",
+      "calibration/native_policy.py",
+      "calibration/queue_manager.py",
+      "calibration/runner.py",
+      "geometry/transforms.py",
+      "research_common.py",
+      "validation/telescope_alignment/check.py",
+      "validation/telescope_closure/multi_sensor.py"
+    ],
+    "calibration/native_operations.py": [
+      "alignment/pede.py",
+      "calibration/native_policy.py",
+      "geometry/native_safety.py",
+      "geometry/placements.py",
+      "geometry/transforms.py",
+      "research_common.py",
+      "validation/telescope_alignment/check.py",
+      "validation/telescope_closure/multi_information.py",
+      "validation/telescope_closure/multi_sensor.py",
+      "validation/telescope_closure/observability.py",
+      "validation/telescope_closure/rotation.py"
+    ],
+    "calibration/native_policy.py": [],
+    "calibration/queue_manager.py": [],
+    "calibration/runner.py": [
+      "research_common.py"
+    ],
+    "calibration/workflow.py": [
+      "calibration/native_controller.py",
+      "calibration/native_operations.py",
+      "digitization/native.py",
+      "research_common.py",
+      "simulation/native.py",
+      "validation/telescope_geometry/prepare.py"
+    ],
+    "digitization/__init__.py": [],
+    "digitization/native.py": [
+      "calibration/native_operations.py",
+      "research_common.py",
+      "simulation/native.py"
+    ],
+    "environment/setup_dependencies.py": [],
+    "geometry/__init__.py": [],
+    "geometry/native_safety.py": [
+      "geometry/placements.py",
+      "geometry/transforms.py"
+    ],
+    "geometry/placements.py": [],
+    "geometry/transforms.py": [],
+    "research_common.py": [],
+    "simulation/__init__.py": [],
+    "simulation/native.py": [
+      "calibration/native_operations.py",
+      "research_common.py"
+    ],
+    "studies/alignment_statistics/compare_hit_residuals.py": [],
+    "studies/alignment_statistics/plot_geometry_accuracy.py": [
+      "geometry/transforms.py",
+      "studies/alignment_statistics/scan_statistics.py"
+    ],
+    "studies/alignment_statistics/scan_statistics.py": [
+      "calibration/native_controller.py",
+      "calibration/native_operations.py",
+      "digitization/native.py",
+      "geometry/transforms.py"
+    ],
+    "studies/alignment_statistics/test_statistics.py": [
+      "calibration/native_controller.py",
+      "studies/alignment_statistics/compare_hit_residuals.py",
+      "studies/alignment_statistics/scan_statistics.py"
+    ],
+    "validation/__init__.py": [],
+    "validation/telescope_alignment/check.py": [],
+    "validation/telescope_closure/bias.py": [],
+    "validation/telescope_closure/closure.py": [
+      "alignment/pede.py",
+      "calibration/native_operations.py",
+      "geometry/transforms.py",
+      "research_common.py",
+      "validation/telescope_alignment/check.py",
+      "validation/telescope_closure/multi_sensor.py",
+      "validation/telescope_closure/rotation.py",
+      "validation/telescope_geometry/prepare.py"
+    ],
+    "validation/telescope_closure/containment.py": [],
+    "validation/telescope_closure/multi_information.py": [
+      "research_common.py"
+    ],
+    "validation/telescope_closure/multi_preflight.py": [
+      "geometry/transforms.py",
+      "research_common.py",
+      "validation/telescope_closure/closure.py",
+      "validation/telescope_closure/containment.py",
+      "validation/telescope_closure/multi_information.py",
+      "validation/telescope_closure/multi_sensor.py",
+      "validation/telescope_closure/rotation.py"
+    ],
+    "validation/telescope_closure/multi_sensor.py": [
+      "geometry/native_safety.py",
+      "research_common.py",
+      "validation/telescope_closure/closure.py",
+      "validation/telescope_closure/rotation.py"
+    ],
+    "validation/telescope_closure/observability.py": [
+      "geometry/transforms.py",
+      "research_common.py"
+    ],
+    "validation/telescope_closure/rotation.py": [
+      "alignment/pede.py",
+      "calibration/native_operations.py",
+      "geometry/placements.py",
+      "geometry/transforms.py",
+      "research_common.py",
+      "validation/telescope_alignment/check.py",
+      "validation/telescope_closure/closure.py",
+      "validation/telescope_closure/multi_sensor.py"
+    ],
+    "validation/telescope_factories/check.py": [],
+    "validation/telescope_factories/prepare.py": [],
+    "validation/telescope_factories/upstream_diff.py": [],
+    "validation/telescope_geometry/check.py": [],
+    "validation/telescope_geometry/prepare.py": [],
+    "validation/test_environment_launcher.py": [],
+    "validation/test_native_bias_diagnostics.py": [
+      "validation/telescope_closure/bias.py"
+    ],
+    "validation/test_native_containment.py": [
+      "geometry/transforms.py",
+      "validation/telescope_closure/containment.py",
+      "validation/telescope_closure/rotation.py"
+    ],
+    "validation/test_native_controller.py": [
+      "calibration/native_controller.py",
+      "research_common.py"
+    ],
+    "validation/test_native_convergence.py": [
+      "calibration/convergence.py"
+    ],
+    "validation/test_native_diagnostic.py": [
+      "calibration/convergence.py",
+      "calibration/native_controller.py",
+      "calibration/native_policy.py",
+      "validation/test_native_controller.py"
+    ],
+    "validation/test_native_digitization.py": [
+      "digitization/native.py",
+      "research_common.py",
+      "simulation/native.py"
+    ],
+    "validation/test_native_geant4.py": [
+      "calibration/native_controller.py",
+      "simulation/native.py"
+    ],
+    "validation/test_native_geometry_safety.py": [
+      "calibration/native_operations.py",
+      "geometry/native_safety.py",
+      "geometry/transforms.py"
+    ],
+    "validation/test_native_multi_sensor.py": [
+      "geometry/transforms.py",
+      "validation/telescope_closure/closure.py",
+      "validation/telescope_closure/multi_sensor.py",
+      "validation/telescope_closure/rotation.py"
+    ],
+    "validation/test_native_operations.py": [
+      "calibration/native_operations.py"
+    ],
+    "validation/test_native_pede_covariance.py": [
+      "calibration/native_operations.py",
+      "research_common.py"
+    ],
+    "validation/test_native_rotation_scope.py": [
+      "geometry/transforms.py",
+      "validation/telescope_alignment/check.py",
+      "validation/telescope_closure/closure.py",
+      "validation/telescope_closure/rotation.py"
+    ],
+    "validation/test_native_serialization.py": [
+      "calibration/native_controller.py"
+    ],
+    "validation/test_native_single_y.py": [
+      "validation/telescope_closure/closure.py",
+      "validation/telescope_closure/multi_information.py",
+      "validation/telescope_closure/multi_sensor.py"
+    ],
+    "validation/test_native_source_identity.py": [
+      "calibration/native_controller.py"
+    ],
+    "validation/test_native_three_sensor.py": [
+      "geometry/transforms.py",
+      "validation/telescope_closure/closure.py",
+      "validation/telescope_closure/multi_preflight.py",
+      "validation/telescope_closure/multi_sensor.py",
+      "validation/telescope_closure/rotation.py"
+    ],
+    "validation/test_native_workflow.py": [
+      "calibration/native_controller.py",
+      "calibration/workflow.py",
+      "research_common.py",
+      "validation/test_native_digitization.py"
+    ],
+    "validation/test_native_y_rotations.py": [
+      "geometry/transforms.py",
+      "research_common.py",
+      "validation/telescope_closure/closure.py",
+      "validation/telescope_closure/rotation.py"
+    ],
+    "validation/test_so3.py": [
+      "geometry/transforms.py"
+    ],
+    "validation/test_transforms.py": [
+      "geometry/transforms.py"
+    ],
+    "studies/alignment_statistics/analyze_full_42d_information.py": [
+      "studies/alignment_statistics/fit_18d_linearized_scan.py"
+    ],
+    "studies/alignment_statistics/fit_18d_linearized_scan.py": [],
+    "studies/alignment_statistics/plan_full_dof_scan.py": [],
+    "studies/alignment_statistics/plot_18d_individual_cohorts.py": [],
+    "studies/alignment_statistics/test_linearized_diagnostics.py": [
+      "studies/alignment_statistics/analyze_full_42d_information.py",
+      "studies/alignment_statistics/fit_18d_linearized_scan.py",
+      "studies/alignment_statistics/plan_full_dof_scan.py",
+      "studies/alignment_statistics/plot_18d_individual_cohorts.py"
+    ]
+  },
+  "cpp_quoted_includes": [
+    {
+      "source": "localDetEICrecon/alignment/src/BeamTestMilleWriter.cc",
+      "include": "BeamTestMilleWriter.h",
+      "resolution": "localDetEICrecon/alignment/src/BeamTestMilleWriter.h"
+    },
+    {
+      "source": "localDetEICrecon/alignment/src/BeamTestMilleWriter.cc",
+      "include": "TiltMeasurementModel.h",
+      "resolution": "localDetEICrecon/alignment/src/TiltMeasurementModel.h"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/FactoryAudit.h",
+      "include": "NavigationAudit.h",
+      "resolution": "localDetEICrecon/experimental/telescope/NavigationAudit.h"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/TelescopeTracking.cc",
+      "include": "factories/SyntheticTrackerHits_factory.h",
+      "resolution": "localDetEICrecon/experimental/telescope/factories/SyntheticTrackerHits_factory.h"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/TelescopeTracking.cc",
+      "include": "factories/TelescopeSeed_factory.h",
+      "resolution": "localDetEICrecon/experimental/telescope/factories/TelescopeSeed_factory.h"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/TelescopeTracking.cc",
+      "include": "factories/tracking/TrackerMeasurementFromHits_factory.h",
+      "resolution": "localDetEICrecon/experimental/telescope/factories/tracking/TrackerMeasurementFromHits_factory.h"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/TelescopeTracking.cc",
+      "include": "factories/tracking/CKFTracking_factory.h",
+      "resolution": "localDetEICrecon/experimental/telescope/factories/tracking/CKFTracking_factory.h"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/TelescopeTracking.cc",
+      "include": "FactoryAudit.h",
+      "resolution": "localDetEICrecon/experimental/telescope/FactoryAudit.h"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/algorithms/tracking/CKFTracking.cc",
+      "include": "CKFTracking.h",
+      "resolution": "localDetEICrecon/experimental/telescope/algorithms/tracking/CKFTracking.h"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/algorithms/tracking/CKFTracking.cc",
+      "include": "../../extensions/edm4eic/EDM4eicToActs.h",
+      "resolution": "localDetEICrecon/experimental/telescope/extensions/edm4eic/EDM4eicToActs.h"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/algorithms/tracking/CKFTracking.cc",
+      "include": "extensions/spdlog/SpdlogFormatters.h",
+      "resolution": "pinned image package header"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/algorithms/tracking/CKFTracking.cc",
+      "include": "extensions/spdlog/SpdlogToActs.h",
+      "resolution": "pinned image package header"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/algorithms/tracking/CKFTracking.h",
+      "include": "CKFTrackingConfig.h",
+      "resolution": "localDetEICrecon/experimental/telescope/algorithms/tracking/CKFTrackingConfig.h"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/algorithms/tracking/CKFTracking.h",
+      "include": "algorithms/interfaces/ActsSvc.h",
+      "resolution": "pinned image package header"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/algorithms/tracking/CKFTracking.h",
+      "include": "algorithms/interfaces/WithPodConfig.h",
+      "resolution": "pinned image package header"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/algorithms/tracking/CKFTracking.h",
+      "include": "algorithms/tracking/ActsGeometryProvider.h",
+      "resolution": "pinned image package header"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/algorithms/tracking/TrackerMeasurementFromHits.cc",
+      "include": "TrackerMeasurementFromHits.h",
+      "resolution": "localDetEICrecon/experimental/telescope/algorithms/tracking/TrackerMeasurementFromHits.h"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/algorithms/tracking/TrackerMeasurementFromHits.h",
+      "include": "algorithms/interfaces/ActsSvc.h",
+      "resolution": "pinned image package header"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/algorithms/tracking/TrackerMeasurementFromHits.h",
+      "include": "algorithms/interfaces/WithPodConfig.h",
+      "resolution": "pinned image package header"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/algorithms/tracking/TrackerMeasurementFromHits.h",
+      "include": "algorithms/tracking/ActsGeometryProvider.h",
+      "resolution": "pinned image package header"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/alignment/NativeMilleModel.cc",
+      "include": "NativeMilleModel.h",
+      "resolution": "localDetEICrecon/experimental/telescope/alignment/NativeMilleModel.h"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/alignment/TelescopeMille.cc",
+      "include": "NativeMilleModel.h",
+      "resolution": "localDetEICrecon/experimental/telescope/alignment/NativeMilleModel.h"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/factories/TelescopeSeed_factory.h",
+      "include": "../algorithms/TelescopeSeed.h",
+      "resolution": "localDetEICrecon/experimental/telescope/algorithms/TelescopeSeed.h"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/factories/tracking/CKFTracking_factory.h",
+      "include": "../../algorithms/tracking/CKFTracking.h",
+      "resolution": "localDetEICrecon/experimental/telescope/algorithms/tracking/CKFTracking.h"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/factories/tracking/CKFTracking_factory.h",
+      "include": "../../algorithms/tracking/CKFTrackingConfig.h",
+      "resolution": "localDetEICrecon/experimental/telescope/algorithms/tracking/CKFTrackingConfig.h"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/factories/tracking/CKFTracking_factory.h",
+      "include": "extensions/jana/JOmniFactory.h",
+      "resolution": "pinned image package header"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/factories/tracking/CKFTracking_factory.h",
+      "include": "services/geometry/acts/ACTSGeo_service.h",
+      "resolution": "pinned image package header"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/factories/tracking/TrackerMeasurementFromHits_factory.h",
+      "include": "algorithms/interfaces/WithPodConfig.h",
+      "resolution": "pinned image package header"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/factories/tracking/TrackerMeasurementFromHits_factory.h",
+      "include": "../../algorithms/tracking/TrackerMeasurementFromHits.h",
+      "resolution": "localDetEICrecon/experimental/telescope/algorithms/tracking/TrackerMeasurementFromHits.h"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/factories/tracking/TrackerMeasurementFromHits_factory.h",
+      "include": "extensions/jana/JOmniFactory.h",
+      "resolution": "pinned image package header"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/factories/tracking/TrackerMeasurementFromHits_factory.h",
+      "include": "services/geometry/acts/ACTSGeo_service.h",
+      "resolution": "pinned image package header"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/factories/tracking/TrackerMeasurementFromHits_factory.h",
+      "include": "services/geometry/dd4hep/DD4hep_service.h",
+      "resolution": "pinned image package header"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/upstream_support/algorithms/meta/CollectionCollector.h",
+      "include": "services/log/Log_service.h",
+      "resolution": "pinned image package header"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/upstream_support/algorithms/meta/CollectionCollector.h",
+      "include": "algorithms/interfaces/WithPodConfig.h",
+      "resolution": "pinned image package header"
+    },
+    {
+      "source": "validation/telescope_alignment/LegacyTelescopeCrosscheck.cc",
+      "include": "BeamTestMilleWriter.h",
+      "resolution": "localDetEICrecon/alignment/src/BeamTestMilleWriter.h"
+    },
+    {
+      "source": "validation/telescope_alignment/TelescopeMilleDerivatives.cc",
+      "include": "alignment/NativeMilleModel.h",
+      "resolution": "localDetEICrecon/experimental/telescope/alignment/NativeMilleModel.h"
+    },
+    {
+      "source": "validation/telescope_alignment/TelescopeMilleFixture.cc",
+      "include": "alignment/NativeMilleModel.h",
+      "resolution": "localDetEICrecon/experimental/telescope/alignment/NativeMilleModel.h"
+    },
+    {
+      "source": "validation/telescope_factories/TelescopeNavigationAudit.cc",
+      "include": "NavigationAudit.h",
+      "resolution": "localDetEICrecon/experimental/telescope/NavigationAudit.h"
+    },
+    {
+      "source": "validation/telescope_factories/TelescopeSerializationAudit.cc",
+      "include": "NavigationAudit.h",
+      "resolution": "localDetEICrecon/experimental/telescope/NavigationAudit.h"
+    },
+    {
+      "source": "validation/telescope_factories/TelescopeSerializationAudit.cc",
+      "include": "algorithms/tracking/TrackerMeasurementFromHits.h",
+      "resolution": "localDetEICrecon/experimental/telescope/algorithms/tracking/TrackerMeasurementFromHits.h"
+    }
+  ],
+  "cmake_target_sources": [
+    {
+      "cmake": "localDetEICrecon/experimental/telescope/CMakeLists.txt",
+      "target": "TestbenchBarrelMetadata",
+      "source": "../../../validation/telescope_geometry/BarrelMetadata.cc",
+      "resolved": "validation/telescope_geometry/BarrelMetadata.cc",
+      "exists": true
+    },
+    {
+      "cmake": "localDetEICrecon/experimental/telescope/CMakeLists.txt",
+      "target": "TelescopeDigitization",
+      "source": "TelescopeDigitization.cc",
+      "resolved": "localDetEICrecon/experimental/telescope/TelescopeDigitization.cc",
+      "exists": true
+    },
+    {
+      "cmake": "localDetEICrecon/experimental/telescope/CMakeLists.txt",
+      "target": "TelescopeTracking",
+      "source": "TelescopeTracking.cc",
+      "resolved": "localDetEICrecon/experimental/telescope/TelescopeTracking.cc",
+      "exists": true
+    },
+    {
+      "cmake": "localDetEICrecon/experimental/telescope/CMakeLists.txt",
+      "target": "TelescopeTracking",
+      "source": "algorithms/tracking/TrackerMeasurementFromHits.cc",
+      "resolved": "localDetEICrecon/experimental/telescope/algorithms/tracking/TrackerMeasurementFromHits.cc",
+      "exists": true
+    },
+    {
+      "cmake": "localDetEICrecon/experimental/telescope/CMakeLists.txt",
+      "target": "TelescopeTracking",
+      "source": "algorithms/tracking/CKFTracking.cc",
+      "resolved": "localDetEICrecon/experimental/telescope/algorithms/tracking/CKFTracking.cc",
+      "exists": true
+    },
+    {
+      "cmake": "localDetEICrecon/experimental/telescope/CMakeLists.txt",
+      "target": "NativeMilleModel",
+      "source": "alignment/NativeMilleModel.cc",
+      "resolved": "localDetEICrecon/experimental/telescope/alignment/NativeMilleModel.cc",
+      "exists": true
+    },
+    {
+      "cmake": "localDetEICrecon/experimental/telescope/CMakeLists.txt",
+      "target": "TelescopeMille",
+      "source": "alignment/TelescopeMille.cc",
+      "resolved": "localDetEICrecon/experimental/telescope/alignment/TelescopeMille.cc",
+      "exists": true
+    },
+    {
+      "cmake": "localDetEICrecon/experimental/telescope/CMakeLists.txt",
+      "target": "TelescopeChannels",
+      "source": "../../../validation/telescope_closure/TelescopeChannels.cc",
+      "resolved": "validation/telescope_closure/TelescopeChannels.cc",
+      "exists": true
+    },
+    {
+      "cmake": "localDetEICrecon/experimental/telescope/CMakeLists.txt",
+      "target": "TelescopeMilleFixture",
+      "source": "../../../validation/telescope_alignment/TelescopeMilleFixture.cc",
+      "resolved": "validation/telescope_alignment/TelescopeMilleFixture.cc",
+      "exists": true
+    },
+    {
+      "cmake": "localDetEICrecon/experimental/telescope/CMakeLists.txt",
+      "target": "LegacyTelescopeCrosscheck",
+      "source": "../../../validation/telescope_alignment/LegacyTelescopeCrosscheck.cc",
+      "resolved": "validation/telescope_alignment/LegacyTelescopeCrosscheck.cc",
+      "exists": true
+    },
+    {
+      "cmake": "localDetEICrecon/experimental/telescope/CMakeLists.txt",
+      "target": "LegacyTelescopeCrosscheck",
+      "source": "../../alignment/src/BeamTestMilleWriter.cc",
+      "resolved": "localDetEICrecon/alignment/src/BeamTestMilleWriter.cc",
+      "exists": true
+    },
+    {
+      "cmake": "localDetEICrecon/experimental/telescope/CMakeLists.txt",
+      "target": "TelescopeMilleDerivatives",
+      "source": "../../../validation/telescope_alignment/TelescopeMilleDerivatives.cc",
+      "resolved": "validation/telescope_alignment/TelescopeMilleDerivatives.cc",
+      "exists": true
+    },
+    {
+      "cmake": "localDetEICrecon/experimental/telescope/CMakeLists.txt",
+      "target": "TelescopePhysicalGeometryAudit",
+      "source": "../../../validation/telescope_geometry/TelescopePhysicalGeometryAudit.cc",
+      "resolved": "validation/telescope_geometry/TelescopePhysicalGeometryAudit.cc",
+      "exists": true
+    },
+    {
+      "cmake": "localDetEICrecon/experimental/telescope/CMakeLists.txt",
+      "target": "TelescopeNavigationAudit",
+      "source": "../../../validation/telescope_factories/TelescopeNavigationAudit.cc",
+      "resolved": "validation/telescope_factories/TelescopeNavigationAudit.cc",
+      "exists": true
+    },
+    {
+      "cmake": "localDetEICrecon/experimental/telescope/CMakeLists.txt",
+      "target": "TelescopeSerializationAudit",
+      "source": "../../../validation/telescope_factories/TelescopeSerializationAudit.cc",
+      "resolved": "validation/telescope_factories/TelescopeSerializationAudit.cc",
+      "exists": true
+    },
+    {
+      "cmake": "localDetEICrecon/experimental/telescope/CMakeLists.txt",
+      "target": "TelescopeSerializationAudit",
+      "source": "algorithms/tracking/TrackerMeasurementFromHits.cc",
+      "resolved": "localDetEICrecon/experimental/telescope/algorithms/tracking/TrackerMeasurementFromHits.cc",
+      "exists": true
+    },
+    {
+      "cmake": "validation/telescope_geometry/CMakeLists.txt",
+      "target": "TelescopeGeometryProbe",
+      "source": "TelescopeGeometryProbe.cc",
+      "resolved": "validation/telescope_geometry/TelescopeGeometryProbe.cc",
+      "exists": true
+    },
+    {
+      "cmake": "validation/telescope_geometry/CMakeLists.txt",
+      "target": "TestbenchBarrelMetadata",
+      "source": "BarrelMetadata.cc",
+      "resolved": "validation/telescope_geometry/BarrelMetadata.cc",
+      "exists": true
+    },
+    {
+      "cmake": "validation/telescope_geometry/CMakeLists.txt",
+      "target": "TelescopePhysicalGeometryAudit",
+      "source": "TelescopePhysicalGeometryAudit.cc",
+      "resolved": "validation/telescope_geometry/TelescopePhysicalGeometryAudit.cc",
+      "exists": true
+    },
+    {
+      "cmake": "validation/telescope_one_track/CMakeLists.txt",
+      "target": "TestbenchBarrelMetadata",
+      "source": "../telescope_geometry/BarrelMetadata.cc",
+      "resolved": "validation/telescope_geometry/BarrelMetadata.cc",
+      "exists": true
+    },
+    {
+      "cmake": "validation/telescope_one_track/CMakeLists.txt",
+      "target": "TelescopeOneTrack",
+      "source": "TelescopeOneTrack.cc",
+      "resolved": "validation/telescope_one_track/TelescopeOneTrack.cc",
+      "exists": true
+    }
+  ],
+  "dynamic_controller_configurations": [
+    {
+      "mode": "l1_y_rx_ry_rz_l2_y",
+      "path": "validation/telescope_alignment/l1_y_rx_ry_rz_l2_y.json",
+      "labels": [
+        700102,
+        700104,
+        700105,
+        700106,
+        700202
+      ],
+      "source_identical": true
+    },
+    {
+      "mode": "l1_l2_y_rx_ry_rz",
+      "path": "validation/telescope_alignment/l1_l2_y_rx_ry_rz.json",
+      "labels": [
+        700102,
+        700104,
+        700105,
+        700106,
+        700202,
+        700204,
+        700205,
+        700206
+      ],
+      "source_identical": true
+    },
+    {
+      "mode": "l1_l2_y_rx_ry_rz_l3_y",
+      "path": "validation/telescope_alignment/l1_l2_y_rx_ry_rz_l3_y.json",
+      "labels": [
+        700102,
+        700104,
+        700105,
+        700106,
+        700202,
+        700204,
+        700205,
+        700206,
+        700302
+      ],
+      "source_identical": true
+    },
+    {
+      "mode": "l1_l2_l3_y_rx_ry_rz",
+      "path": "validation/telescope_alignment/l1_l2_l3_y_rx_ry_rz.json",
+      "labels": [
+        700102,
+        700104,
+        700105,
+        700106,
+        700202,
+        700204,
+        700205,
+        700206,
+        700302,
+        700304,
+        700305,
+        700306
+      ],
+      "source_identical": true
+    },
+    {
+      "mode": "l1_y",
+      "path": "validation/telescope_alignment/l1_global_y.json",
+      "labels": [
+        700102
+      ],
+      "source_identical": true
+    }
+  ],
+  "native_closure_configurations": [
+    "l1_global_rx",
+    "l1_global_rx_ry_rz",
+    "l1_global_ry",
+    "l1_global_ry_rz",
+    "l1_global_rz",
+    "l1_global_y",
+    "l1_global_y_rx_ry_rz",
+    "l1_l2_global_y",
+    "l1_l2_l3_y_rx_ry_rz",
+    "l1_l2_y_rx_ry_rz",
+    "l1_l2_y_rx_ry_rz_l3_y",
+    "l1_y_rx_l2_y",
+    "l1_y_rx_ry_rz_l2_y"
+  ],
+  "public_examples": [
+    {
+      "public_config": "calibration/config/native_workflow_example.json",
+      "target": "validation/telescope_alignment/l1_global_y.json",
+      "unique_mode": "l1_y",
+      "identical_to_source": true
+    },
+    {
+      "public_config": "calibration/config/native_workflow_multi.json",
+      "target": "validation/telescope_alignment/l1_y_rx_ry_rz_l2_y.json",
+      "unique_mode": "l1_y_rx_ry_rz_l2_y",
+      "identical_to_source": true
+    },
+    {
+      "public_config": "calibration/config/native_workflow_smoke.json",
+      "target": "validation/telescope_alignment/l1_global_y.json",
+      "unique_mode": "l1_y",
+      "identical_to_source": true
+    }
+  ],
+  "external_sources_lock": "environment/dependencies.json",
+  "geometry_template": "geometry/nominal/seven_layer_telescope.xml",
+  "runtime_subprocesses": [
+    "npsim",
+    "eicrecon",
+    "external/install/bin/pede",
+    "external/install/bin/inspectMilleBinary",
+    "TelescopeChannels",
+    "TelescopeMilleDerivatives",
+    "TelescopePhysicalGeometryAudit",
+    "python3 -m calibration.native_controller stage"
+  ],
+  "private_data_required_for_smoke": false,
+  "independent_reference": "LegacyTelescopeCrosscheck + BeamTestMilleWriter.cc/.h + TiltMeasurementModel.h; no +Z reconstruction backend",
+  "offline_linearized_diagnostics": {
+    "scope": "Read-only first-linearized diagnostics; not new operational Controller modes",
+    "sources": [
+      "studies/alignment_statistics/fit_18d_linearized_scan.py",
+      "studies/alignment_statistics/analyze_full_42d_information.py",
+      "studies/alignment_statistics/plan_full_dof_scan.py",
+      "studies/alignment_statistics/plot_18d_individual_cohorts.py",
+      "studies/alignment_statistics/plot_all_18d_scan.C"
+    ],
+    "input": "Explicit native ACTS mille.json or derived fit summary; historical datasets remain external",
+    "dependencies": [
+      "NumPy in pinned image",
+      "ROOT/PyROOT in pinned image for plots"
+    ],
+    "runtime_or_geometry_mutation": false,
+    "deferred_original_tools": [
+      "run_real_18d_scan.py",
+      "run_18d_iterations.py",
+      "preflight_full_dof.py"
+    ]
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "scope": "experimental_zero_field_material_free",
+  "convention": "c_new=c_current+(0,dY,0); R_new=Exp([dRx,dRy,dRz]) R_current; current sensitive-center pivot, active left-Global rotations",
+  "parameters": [
+    {
+      "system": 31,
+      "layer": 1,
+      "axis": "global_y",
+      "label": 700102,
+      "unit": "mm",
+      "pivot": "sensitive_surface_center",
+      "composition": "world_translation"
+    },
+    {
+      "system": 31,
+      "layer": 1,
+      "axis": "global_rx",
+      "label": 700104,
+      "unit": "rad",
+      "pivot": "sensitive_surface_center",
+      "composition": "left_global_exp",
+      "geometry_id": 216173056991691039,
+      "volume_id": 272631839
+    },
+    {
+      "system": 31,
+      "layer": 1,
+      "axis": "global_ry",
+      "label": 700105,
+      "unit": "rad",
+      "pivot": "sensitive_surface_center",
+      "composition": "left_global_exp",
+      "geometry_id": 216173056991691039,
+      "volume_id": 272631839
+    },
+    {
+      "system": 31,
+      "layer": 1,
+      "axis": "global_rz",
+      "label": 700106,
+      "unit": "rad",
+      "pivot": "sensitive_surface_center",
+      "composition": "left_global_exp",
+      "geometry_id": 216173056991691039,
+      "volume_id": 272631839
+    }
+  ],
+  "fixed": "L1 Global X/Z and all other sensor poses fixed; bounded L1 Y plus rotations only."
+}

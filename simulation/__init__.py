@@ -1,0 +1,1 @@
+"""Independent simulation research task."""

@@ -1,0 +1,37 @@
+{
+  "scope": "experimental_zero_field_material_free",
+  "convention": "c_new=c_current+(0,dY,0); world translation of the selected sensitive surface; all orientations remain fixed",
+  "parameters": [
+    {
+      "system": 31,
+      "layer": 1,
+      "axis": "global_y",
+      "label": 700102,
+      "unit": "mm",
+      "pivot": "sensitive_surface_center",
+      "composition": "world_translation",
+      "geometry_id": 216173056991691039,
+      "volume_id": 272631839
+    }
+  ],
+  "fixed": "All L0/L2/L3/L4 poses and all L1 components except Global Y are fixed. Only the explicitly listed parameter is fitted.",
+  "aligned_sensors": [
+    {
+      "system": 31,
+      "layer": 1,
+      "volume_id": 272631839,
+      "geometry_id": 216173056991691039,
+      "components": ["global_y"]
+    }
+  ],
+  "fixed_reference_sensors": [0, 2, 3, 4],
+  "fixed_components": ["global_x", "global_z"],
+  "correction_pivot": "sensitive_surface_center",
+  "rotation_composition": "left_global_exp",
+  "translation_convention": "world_translation",
+  "containment": {
+    "module_envelope": "preserve_clearance_air_growth",
+    "layer_envelope": "preserve_clearance_air_growth",
+    "sensitive_corners": 8
+  }
+}

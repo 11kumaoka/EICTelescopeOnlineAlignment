@@ -1,0 +1,40 @@
+{
+  "scope": "experimental_zero_field_material_free",
+  "convention": "Physical left-Global Exp([dRx,dRy,dRz]) increments in radians, current sensitive-center pivot; bounded L1-only scope",
+  "parameters": [
+    {
+      "system": 31,
+      "layer": 1,
+      "axis": "global_rx",
+      "label": 700104,
+      "unit": "rad",
+      "pivot": "sensitive_surface_center",
+      "composition": "left_global_exp",
+      "geometry_id": 216173056991691039,
+      "volume_id": 272631839
+    },
+    {
+      "system": 31,
+      "layer": 1,
+      "axis": "global_ry",
+      "label": 700105,
+      "unit": "rad",
+      "pivot": "sensitive_surface_center",
+      "composition": "left_global_exp",
+      "geometry_id": 216173056991691039,
+      "volume_id": 272631839
+    },
+    {
+      "system": 31,
+      "layer": 1,
+      "axis": "global_rz",
+      "label": 700106,
+      "unit": "rad",
+      "pivot": "sensitive_surface_center",
+      "composition": "left_global_exp",
+      "geometry_id": 216173056991691039,
+      "volume_id": 272631839
+    }
+  ],
+  "fixed": "L1 translations and all other sensor poses fixed, including L0/L2/L3/L4 references; no arbitrary six-DOF fitting."
+}

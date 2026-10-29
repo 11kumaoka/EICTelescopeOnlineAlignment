@@ -1,0 +1,20 @@
+cmake_minimum_required(VERSION 3.16)
+project(TelescopeOneTrack LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 20)
+find_package(Acts REQUIRED COMPONENTS PluginDD4hep)
+find_package(DD4hep REQUIRED COMPONENTS DDCore DDRec)
+find_package(EICrecon CONFIG REQUIRED)
+find_package(EDM4EIC REQUIRED)
+find_package(algorithms REQUIRED)
+find_package(nlohmann_json REQUIRED)
+find_package(spdlog REQUIRED)
+find_library(ACTS_EXAMPLES_FRAMEWORK NAMES ActsExamplesFramework REQUIRED)
+add_library(TestbenchBarrelMetadata SHARED ../telescope_geometry/BarrelMetadata.cc)
+target_link_libraries(TestbenchBarrelMetadata PRIVATE DD4hep::DDCore DD4hep::DDRec)
+dd4hep_generate_rootmap(TestbenchBarrelMetadata)
+add_executable(TelescopeOneTrack TelescopeOneTrack.cc)
+target_compile_definitions(TelescopeOneTrack PRIVATE Acts_VERSION_MAJOR=${Acts_VERSION_MAJOR})
+target_link_libraries(TelescopeOneTrack PRIVATE
+  EICrecon::algorithms_tracking_library Acts::Core Acts::PluginDD4hep
+  ${ACTS_EXAMPLES_FRAMEWORK} DD4hep::DDCore DD4hep::DDRec
+  EDM4EIC::edm4eic algorithms::core nlohmann_json::nlohmann_json spdlog::spdlog)

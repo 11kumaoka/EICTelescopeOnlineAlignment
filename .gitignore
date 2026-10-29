@@ -1,0 +1,35 @@
+# Generated results, builds, and external dependencies
+/results/
+/result/
+/build/
+/external/
+*.root
+*.gdml
+*.o
+*.so
+*.log
+*.dat
+*.bin
+/millepede.*
+/mp2con.txt
+/mp2str.txt
+__pycache__/
+*.pyc
+.DS_Store
+
+# Local settings and credentials
+/.vscode/
+.env
+.env.*
+!.env.example
+
+# Local archives and editor backups
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.bak
+*~
+
+# External RawHit deliveries are local data.
+/input/*

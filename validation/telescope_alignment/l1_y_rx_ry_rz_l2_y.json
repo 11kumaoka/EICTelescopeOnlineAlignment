@@ -1,0 +1,62 @@
+{
+  "scope": "experimental_zero_field_material_free",
+  "convention": "c_new=c_current+(0,dY,0); R_new=Exp([dRx,dRy,dRz]) R_current; current sensitive-center pivot, active left-Global rotations",
+  "parameters": [
+    {
+      "system": 31,
+      "layer": 1,
+      "axis": "global_y",
+      "label": 700102,
+      "unit": "mm",
+      "pivot": "sensitive_surface_center",
+      "composition": "world_translation",
+      "geometry_id": 216173056991691039,
+      "volume_id": 272631839
+    },
+    {
+      "system": 31,
+      "layer": 1,
+      "axis": "global_rx",
+      "label": 700104,
+      "unit": "rad",
+      "pivot": "sensitive_surface_center",
+      "composition": "left_global_exp",
+      "geometry_id": 216173056991691039,
+      "volume_id": 272631839
+    },
+    {
+      "system": 31,
+      "layer": 1,
+      "axis": "global_ry",
+      "label": 700105,
+      "unit": "rad",
+      "pivot": "sensitive_surface_center",
+      "composition": "left_global_exp",
+      "geometry_id": 216173056991691039,
+      "volume_id": 272631839
+    },
+    {
+      "system": 31,
+      "layer": 1,
+      "axis": "global_rz",
+      "label": 700106,
+      "unit": "rad",
+      "pivot": "sensitive_surface_center",
+      "composition": "left_global_exp",
+      "geometry_id": 216173056991691039,
+      "volume_id": 272631839
+    },
+    {
+      "system": 31,
+      "layer": 2,
+      "axis": "global_y",
+      "label": 700202,
+      "unit": "mm",
+      "pivot": "sensitive_surface_center",
+      "composition": "world_translation",
+      "geometry_id": 216173194430644511,
+      "volume_id": 272633887
+    }
+  ],
+  "fixed": "L0/L3/L4 poses fixed; L1 Global X/Z and L2 Global X/Z/Rx/Ry/Rz fixed. Only L1 Global Y/Rx/Ry/Rz and L2 Global Y are free."
+}

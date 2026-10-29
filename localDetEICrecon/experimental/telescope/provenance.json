@@ -1,0 +1,186 @@
+{
+  "upstream_commit": "195966d41899800eaeca6fbafd63cd53735e6543",
+  "copied_files": [
+    {
+      "upstream": "src/algorithms/tracking/TrackerMeasurementFromHits.h",
+      "local": "algorithms/tracking/TrackerMeasurementFromHits.h",
+      "sha256": "e0e3b911bf6f96630ff6399919ffc76ba84496a6cc5865c98ab4ecf807757009"
+    },
+    {
+      "upstream": "src/algorithms/tracking/TrackerMeasurementFromHits.cc",
+      "local": "algorithms/tracking/TrackerMeasurementFromHits.cc",
+      "sha256": "4c9fb6a962e3550ff6ca8d2b6b0de8a4a6202961670ba1f811df1b27782db415"
+    },
+    {
+      "upstream": "src/algorithms/tracking/CKFTracking.h",
+      "local": "algorithms/tracking/CKFTracking.h",
+      "sha256": "32a5c0c2162261badfb56f0e78653812cae7b44dd3402a69cdf2d264526d5f91"
+    },
+    {
+      "upstream": "src/algorithms/tracking/CKFTracking.cc",
+      "local": "algorithms/tracking/CKFTracking.cc",
+      "sha256": "f6af39e716bbd843701738d4271c77519431b07068b17518986b10f0e0dc8150"
+    },
+    {
+      "upstream": "src/algorithms/tracking/CKFTrackingConfig.h",
+      "local": "algorithms/tracking/CKFTrackingConfig.h",
+      "sha256": "687026d48604369dd9a0dddde35c6491652b2e9810bfa3b0753c7cd6afc85cf8"
+    },
+    {
+      "upstream": "src/factories/tracking/TrackerMeasurementFromHits_factory.h",
+      "local": "factories/tracking/TrackerMeasurementFromHits_factory.h",
+      "sha256": "4e556bb9da4e79e4761f1d09cda247be2f98f973b20a1b5a5d9df21d2c7881fd"
+    },
+    {
+      "upstream": "src/factories/tracking/CKFTracking_factory.h",
+      "local": "factories/tracking/CKFTracking_factory.h",
+      "sha256": "35910224272f652a85eb38cf25e463aee84a5119ab6f5aa49038a58ea0402ae9"
+    },
+    {
+      "upstream": "src/extensions/edm4eic/EDM4eicToActs.h",
+      "local": "extensions/edm4eic/EDM4eicToActs.h",
+      "sha256": "ac4bb3f43004e2dfef5c6d8e3d116cc2181eb660dcb90637b867c046e2593e74",
+      "reason": "Required pinned CKF header is not installed; copied unchanged"
+    },
+    {
+      "upstream": "src/algorithms/meta/CollectionCollector.h",
+      "local": "upstream_support/algorithms/meta/CollectionCollector.h",
+      "sha256": "38fd816ba2005e3b86bf4c6a13516370db64c3bd7d6ead5e516bee649435217d",
+      "reason": "Header required by installed official collector factory is missing from installed include tree; copied unchanged"
+    }
+  ],
+  "reviewed_sources": [
+    {
+      "upstream": "src/algorithms/tracking/ActsGeometryProvider.cc",
+      "sha256": "ba663f6146553c71753a1129344deb92c285895dcc1eeb9ed1428040b293bf46"
+    },
+    {
+      "upstream": "src/algorithms/tracking/ActsGeometryProvider.h",
+      "sha256": "0208a1f28df4a26e8b44b834340a345debc44783fcdeaf98f2d61c1eafb92a97"
+    },
+    {
+      "upstream": "src/algorithms/tracking/ActsToTracks.cc",
+      "sha256": "e7ddbdf14ffd9c1e344095757299e57621256ce7edd2d6377b763a15faee4a99"
+    },
+    {
+      "upstream": "src/algorithms/tracking/ActsToTracks.h",
+      "sha256": "9a6a8c80159fb5ddbd4a1af92b5744183c52a84ff213dca1b7a3aceca62cf988"
+    },
+    {
+      "upstream": "src/algorithms/tracking/CKFTracking.cc",
+      "sha256": "f6af39e716bbd843701738d4271c77519431b07068b17518986b10f0e0dc8150"
+    },
+    {
+      "upstream": "src/algorithms/tracking/CKFTracking.h",
+      "sha256": "32a5c0c2162261badfb56f0e78653812cae7b44dd3402a69cdf2d264526d5f91"
+    },
+    {
+      "upstream": "src/algorithms/tracking/CKFTrackingConfig.h",
+      "sha256": "687026d48604369dd9a0dddde35c6491652b2e9810bfa3b0753c7cd6afc85cf8"
+    },
+    {
+      "upstream": "src/algorithms/tracking/CKFTrackingFunction.cc",
+      "sha256": "49048428355380187bec261dbdb10d6fd69cb92bc9135dd4ec2e8d158f80f43f"
+    },
+    {
+      "upstream": "src/algorithms/tracking/OrthogonalTrackSeedingConfig.h",
+      "sha256": "f5768762e37fc5e5e4469b7575e8d650e04453b7b6abf9c24ac12e2a6288ac8d"
+    },
+    {
+      "upstream": "src/algorithms/tracking/SpacePoint.h",
+      "sha256": "a2de6408ee44075b284745ffe305ec5ba142546a0e798bcff6f5849a67442871"
+    },
+    {
+      "upstream": "src/algorithms/tracking/TrackSeeding.cc",
+      "sha256": "e581c8e9cd515a5739d8845e1038d0b6a3fd6311cf956895bd50cfb8dca1e83c"
+    },
+    {
+      "upstream": "src/algorithms/tracking/TrackSeeding.h",
+      "sha256": "6c80403f1c2806dc830faa77c108b37b50797c3065bbe3910b4ccfae4da4932e"
+    },
+    {
+      "upstream": "src/algorithms/tracking/TrackerMeasurementFromHits.cc",
+      "sha256": "4c9fb6a962e3550ff6ca8d2b6b0de8a4a6202961670ba1f811df1b27782db415"
+    },
+    {
+      "upstream": "src/algorithms/tracking/TrackerMeasurementFromHits.h",
+      "sha256": "e0e3b911bf6f96630ff6399919ffc76ba84496a6cc5865c98ab4ecf807757009"
+    },
+    {
+      "upstream": "src/factories/tracking/ActsToTracks_factory.h",
+      "sha256": "60dba5038acb5b6bf18c70f490459f04309a9f5ba6433e61690c0ed5268ee4d0"
+    },
+    {
+      "upstream": "src/factories/tracking/CKFTracking_factory.h",
+      "sha256": "35910224272f652a85eb38cf25e463aee84a5119ab6f5aa49038a58ea0402ae9"
+    },
+    {
+      "upstream": "src/factories/tracking/TrackSeeding_factory.h",
+      "sha256": "9aed0f4d13457ec95e1009b4aaad623e346a335e0a60b51e32e3b314c4d3d69c"
+    },
+    {
+      "upstream": "src/factories/tracking/TrackerMeasurementFromHits_factory.h",
+      "sha256": "4e556bb9da4e79e4761f1d09cda247be2f98f973b20a1b5a5d9df21d2c7881fd"
+    },
+    {
+      "upstream": "src/global/tracking/tracking.cc",
+      "sha256": "61c501b589d622881df462281b046264608c89276b2d03c3f6659a0f8ce0f356"
+    },
+    {
+      "upstream": "src/services/algorithms_init/AlgorithmsInit_service.h",
+      "sha256": "a72e89665fcca42d0e4872e58693245968049239f90f5b168b147bea836af530"
+    },
+    {
+      "upstream": "src/services/algorithms_init/algorithms_init.cc",
+      "sha256": "02f80d1ed0490ae2d440ccddab70cf1e87d02502df0c34e1b2aa24006c32a11d"
+    },
+    {
+      "upstream": "src/services/geometry/acts/ACTSGeo_service.cc",
+      "sha256": "706587d1f98a90a89291a86a2f52b1a5fd16cc5bd032c36cf867e34fb1beee64"
+    },
+    {
+      "upstream": "src/services/geometry/acts/ACTSGeo_service.h",
+      "sha256": "a87daa3e4579dce6d320d0ce547cdab998e8d031875c04f15a2868e04ec5c32e"
+    },
+    {
+      "upstream": "src/services/geometry/dd4hep/DD4hep_service.cc",
+      "sha256": "74afd0a0d43f00f3e9ba8bbfb55d5446c4282aac5cee2c0e0eacd149e89145a0"
+    },
+    {
+      "upstream": "src/services/geometry/dd4hep/DD4hep_service.h",
+      "sha256": "b1578956632b6456e145fb2ea212119b1339ad50e480cecf6f1edb998b54db12"
+    },
+    {
+      "upstream": "src/factories/tracking/TrackerHitReconstruction_factory.h",
+      "sha256": "f9b59c94fccc26317d4b5c5ef72945622291cbe8b8f945a106809af2688bdd64"
+    },
+    {
+      "upstream": "src/algorithms/tracking/TrackerHitReconstruction.cc",
+      "sha256": "3ec90a925d0be6d58c4172ec1159449e6379b2718a549d01778a24c345b0c683"
+    },
+    {
+      "upstream": "src/algorithms/tracking/TrackerHitReconstruction.h",
+      "sha256": "f212063e23a0b2404aa733b9a1d2056cad478040fe7dcf4cb8633f687702f6e9"
+    },
+    {
+      "upstream": "src/factories/meta/CollectionCollector_factory.h",
+      "sha256": "34fbfdc3042d5dbccdc61b796bed9be9b4bb305684d5e0426f990dbe451bc6c2"
+    }
+  ],
+  "directly_reused": [
+    "DD4hep_service",
+    "ACTSGeo_service",
+    "AlgorithmsInit_service",
+    "ActsGeometryProvider",
+    "CKFTracking::makeCKFTrackingFunction",
+    "ActsToTracks",
+    "ActsToTracks_factory",
+    "JOmniFactory",
+    "JOmniFactoryGeneratorT",
+    "JEventSourcePODIO",
+    "JEventProcessorPODIO",
+    "TrackerHitReconstruction",
+    "TrackerHitReconstruction_factory",
+    "CollectionCollector_factory"
+  ]
+}

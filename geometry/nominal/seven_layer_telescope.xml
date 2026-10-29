@@ -1,0 +1,159 @@
+<lccdd xmlns:compact="http://www.lcsim.org/schemas/compact/1.0"
+       xmlns:xs="http://www.w3.org/2001/XMLSchema"
+       xs:noNamespaceSchemaLocation="http://www.lcsim.org/schemas/compact/1.0/compact.xsd">
+
+  <info name="SevenLayerBeamTestTelescope"
+        title="Seven-layer beam-test telescope (5x SiMAPS + MPGD + AC-LGAD)"
+        author="OnlineTimeAlignmentTest"
+        status="development"
+        version="0.1"/>
+
+  <includes>
+    <gdmlFile ref="${DD4hepINSTALL}/DDDetectors/compact/elements.xml"/>
+    <gdmlFile ref="${DD4hepINSTALL}/DDDetectors/compact/materials.xml"/>
+  </includes>
+
+  <define>
+    <include ref="${DD4hepINSTALL}/DDDetectors/compact/detector_types.xml"/>
+
+    <constant name="VertexSubAssembly_0_ID" value="25"/>
+    <constant name="VertexBarrel_0_ID" value="31"/>
+    <constant name="TrackerSubAssembly_0_ID" value="40"/>
+    <constant name="TrackerSubAssembly_4_ID" value="44"/>
+    <constant name="TrackerSubAssembly_6_ID" value="46"/>
+    <constant name="BarrelTOF_ID" value="92"/>
+
+    <constant name="world_half_x" value="1000*mm"/>
+    <constant name="world_half_y" value="1000*mm"/>
+    <constant name="world_half_z" value="1000*mm"/>
+
+    <constant name="plane_half_x" value="50*mm"/>
+    <constant name="plane_half_y" value="50*mm"/>
+    <constant name="plane_ring_r" value="0*mm"/>
+
+    <constant name="simaps_z0" value="0*mm"/>
+    <constant name="simaps_z1" value="50*mm"/>
+    <constant name="simaps_z2" value="100*mm"/>
+    <constant name="simaps_z3" value="150*mm"/>
+    <constant name="simaps_z4" value="200*mm"/>
+    <constant name="mpgd_z" value="250*mm"/>
+    <constant name="aclgad_z" value="300*mm"/>
+
+    <constant name="tracker_region_rmax" value="120*mm"/>
+    <constant name="tracker_region_zmax" value="350*mm"/>
+
+    <constant name="simaps_thickness" value="0.05*mm"/>
+    <constant name="mpgd_thickness" value="3.0*mm"/>
+    <constant name="aclgad_thickness" value="0.35*mm"/>
+  </define>
+
+  <display>
+    <vis name="SiMAPSVis" alpha="1.0" r="0.9" g="0.1" b="0.1" drawingStyle="solid" showDaughters="true" visible="true"/>
+    <vis name="MPGDVis" alpha="1.0" r="0.1" g="0.6" b="1.0" drawingStyle="solid" showDaughters="true" visible="true"/>
+    <vis name="ACLGADVis" alpha="1.0" r="0.2" g="0.9" b="0.2" drawingStyle="solid" showDaughters="true" visible="true"/>
+    <vis name="PlaneLayerVis" alpha="1.0" r="0.9" g="0.8" b="0.1" drawingStyle="wireframe" showDaughters="true" visible="true"/>
+  </display>
+
+  <readouts>
+    <readout name="SiMAPSHits">
+      <segmentation type="CartesianGridXZ" grid_size_x="0.034641*mm" grid_size_z="0.034641*mm"/>
+      <id>system:8,barrel:3,layer:6,wedge:5,module:6,sensor:4,x:32:-16,z:-16</id>
+    </readout>
+    <readout name="MPGDHits">
+      <segmentation type="CartesianGridXY" grid_size_x="0.519615*mm" grid_size_y="0.519615*mm"/>
+      <id>system:8,barrel:3,layer:6,wedge:5,module:6,sensor:4,x:32:-16,y:-16</id>
+    </readout>
+    <readout name="ACLGADHits">
+      <!-- 1D strip-like approximation: fine pitch in x, unresolved y encoded with a very coarse bin. -->
+      <segmentation type="CartesianGridXY" grid_size_x="0.5*mm" grid_size_y="100.0*mm"/>
+      <id>system:8,barrel:3,layer:6,wedge:5,module:6,sensor:4,x:32:-16,y:-16</id>
+    </readout>
+  </readouts>
+
+  <world material="Air">
+    <shape type="Box" dx="world_half_x" dy="world_half_y" dz="world_half_z"/>
+  </world>
+
+  <detectors>
+    <detector id="VertexBarrel_0_ID" name="SiMAPS" type="DD4hep_SiTrackerEndcap2" readout="SiMAPSHits" insideTrackingVolume="true">
+      <type_flags type="DetType_TRACKER + DetType_ENDCAP + DetType_PIXEL"/>
+      <module name="SiMAPSModule">
+        <trd x1="plane_half_x" x2="plane_half_x" z="plane_half_y"/>
+        <module_component thickness="simaps_thickness" material="Silicon" sensitive="true" vis="SiMAPSVis"/>
+      </module>
+      <layer id="0" vis="PlaneLayerVis">
+        <ring r="plane_ring_r" zstart="simaps_z0" nmodules="1" dz="0.0*mm" module="SiMAPSModule"/>
+      </layer>
+      <layer id="1" vis="PlaneLayerVis">
+        <ring r="plane_ring_r" zstart="simaps_z1" nmodules="1" dz="0.0*mm" module="SiMAPSModule"/>
+      </layer>
+      <layer id="2" vis="PlaneLayerVis">
+        <ring r="plane_ring_r" zstart="simaps_z2" nmodules="1" dz="0.0*mm" module="SiMAPSModule"/>
+      </layer>
+      <layer id="3" vis="PlaneLayerVis">
+        <ring r="plane_ring_r" zstart="simaps_z3" nmodules="1" dz="0.0*mm" module="SiMAPSModule"/>
+      </layer>
+      <layer id="4" vis="PlaneLayerVis">
+        <ring r="plane_ring_r" zstart="simaps_z4" nmodules="1" dz="0.0*mm" module="SiMAPSModule"/>
+      </layer>
+    </detector>
+
+    <detector id="100" name="MPGDPlane" type="DD4hep_SiTrackerEndcap2" readout="MPGDHits" insideTrackingVolume="true">
+      <type_flags type="DetType_TRACKER + DetType_ENDCAP + DetType_GASEOUS"/>
+      <module name="MPGDModule">
+        <trd x1="plane_half_x" x2="plane_half_x" z="plane_half_y"/>
+        <module_component thickness="mpgd_thickness" material="Silicon" sensitive="true" vis="MPGDVis"/>
+      </module>
+      <layer id="5" vis="PlaneLayerVis">
+        <ring r="plane_ring_r" zstart="mpgd_z" nmodules="1" dz="0.0*mm" module="MPGDModule"/>
+      </layer>
+    </detector>
+
+    <detector id="BarrelTOF_ID" name="ACLGADPlane" type="DD4hep_SiTrackerEndcap2" readout="ACLGADHits" insideTrackingVolume="true">
+      <type_flags type="DetType_TRACKER + DetType_ENDCAP"/>
+      <module name="ACLGADModule">
+        <trd x1="plane_half_x" x2="plane_half_x" z="plane_half_y"/>
+        <module_component thickness="aclgad_thickness" material="Silicon" sensitive="true" vis="ACLGADVis"/>
+      </module>
+      <layer id="6" vis="PlaneLayerVis">
+        <ring r="plane_ring_r" zstart="aclgad_z" nmodules="1" dz="0.0*mm" module="ACLGADModule"/>
+      </layer>
+    </detector>
+
+    <detector id="VertexSubAssembly_0_ID"
+      name="VertexBarrelSubAssembly"
+      type="DD4hep_SubdetectorAssembly"
+      vis="PlaneLayerVis">
+      <composite name="SiMAPS"/>
+    </detector>
+
+    <detector id="TrackerSubAssembly_4_ID"
+      name="EndcapMPGDSubAssembly"
+      type="DD4hep_SubdetectorAssembly"
+      vis="PlaneLayerVis">
+      <composite name="MPGDPlane"/>
+    </detector>
+
+    <detector id="TrackerSubAssembly_6_ID"
+      name="EndcapTOFSubAssembly"
+      type="DD4hep_SubdetectorAssembly"
+      vis="PlaneLayerVis">
+      <composite name="ACLGADPlane"/>
+    </detector>
+  </detectors>
+
+  <plugins>
+    <plugin name="DD4hep_ParametersPlugin">
+      <argument value="SiMAPS"/>
+      <argument value="layer_pattern: str=SiMAPS_layer\d"/>
+    </plugin>
+    <plugin name="DD4hep_ParametersPlugin">
+      <argument value="MPGDPlane"/>
+      <argument value="layer_pattern: str=MPGDPlane_layer\d"/>
+    </plugin>
+    <plugin name="DD4hep_ParametersPlugin">
+      <argument value="ACLGADPlane"/>
+      <argument value="layer_pattern: str=ACLGADPlane_layer\d"/>
+    </plugin>
+  </plugins>
+</lccdd>

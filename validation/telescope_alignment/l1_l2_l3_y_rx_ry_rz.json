@@ -1,0 +1,193 @@
+{
+  "scope": "experimental_zero_field_material_free",
+  "convention": "For each selected sensor: c_new=c_current+(0,dY,0); R_new=Exp([dRx,dRy,dRz]) R_current; current sensitive-center pivot, active left-Global rotations",
+  "parameters": [
+    {
+      "system": 31,
+      "layer": 1,
+      "axis": "global_y",
+      "label": 700102,
+      "unit": "mm",
+      "pivot": "sensitive_surface_center",
+      "composition": "world_translation",
+      "geometry_id": 216173056991691039,
+      "volume_id": 272631839
+    },
+    {
+      "system": 31,
+      "layer": 1,
+      "axis": "global_rx",
+      "label": 700104,
+      "unit": "rad",
+      "pivot": "sensitive_surface_center",
+      "composition": "left_global_exp",
+      "geometry_id": 216173056991691039,
+      "volume_id": 272631839
+    },
+    {
+      "system": 31,
+      "layer": 1,
+      "axis": "global_ry",
+      "label": 700105,
+      "unit": "rad",
+      "pivot": "sensitive_surface_center",
+      "composition": "left_global_exp",
+      "geometry_id": 216173056991691039,
+      "volume_id": 272631839
+    },
+    {
+      "system": 31,
+      "layer": 1,
+      "axis": "global_rz",
+      "label": 700106,
+      "unit": "rad",
+      "pivot": "sensitive_surface_center",
+      "composition": "left_global_exp",
+      "geometry_id": 216173056991691039,
+      "volume_id": 272631839
+    },
+    {
+      "system": 31,
+      "layer": 2,
+      "axis": "global_y",
+      "label": 700202,
+      "unit": "mm",
+      "pivot": "sensitive_surface_center",
+      "composition": "world_translation",
+      "geometry_id": 216173194430644511,
+      "volume_id": 272633887
+    },
+    {
+      "system": 31,
+      "layer": 2,
+      "axis": "global_rx",
+      "label": 700204,
+      "unit": "rad",
+      "pivot": "sensitive_surface_center",
+      "composition": "left_global_exp",
+      "geometry_id": 216173194430644511,
+      "volume_id": 272633887
+    },
+    {
+      "system": 31,
+      "layer": 2,
+      "axis": "global_ry",
+      "label": 700205,
+      "unit": "rad",
+      "pivot": "sensitive_surface_center",
+      "composition": "left_global_exp",
+      "geometry_id": 216173194430644511,
+      "volume_id": 272633887
+    },
+    {
+      "system": 31,
+      "layer": 2,
+      "axis": "global_rz",
+      "label": 700206,
+      "unit": "rad",
+      "pivot": "sensitive_surface_center",
+      "composition": "left_global_exp",
+      "geometry_id": 216173194430644511,
+      "volume_id": 272633887
+    },
+    {
+      "system": 31,
+      "layer": 3,
+      "axis": "global_y",
+      "label": 700302,
+      "unit": "mm",
+      "pivot": "sensitive_surface_center",
+      "composition": "world_translation",
+      "geometry_id": 216173331869597983,
+      "volume_id": 272635935
+    },
+    {
+      "system": 31,
+      "layer": 3,
+      "axis": "global_rx",
+      "label": 700304,
+      "unit": "rad",
+      "pivot": "sensitive_surface_center",
+      "composition": "left_global_exp",
+      "geometry_id": 216173331869597983,
+      "volume_id": 272635935
+    },
+    {
+      "system": 31,
+      "layer": 3,
+      "axis": "global_ry",
+      "label": 700305,
+      "unit": "rad",
+      "pivot": "sensitive_surface_center",
+      "composition": "left_global_exp",
+      "geometry_id": 216173331869597983,
+      "volume_id": 272635935
+    },
+    {
+      "system": 31,
+      "layer": 3,
+      "axis": "global_rz",
+      "label": 700306,
+      "unit": "rad",
+      "pivot": "sensitive_surface_center",
+      "composition": "left_global_exp",
+      "geometry_id": 216173331869597983,
+      "volume_id": 272635935
+    }
+  ],
+  "fixed": "L0/L4 poses fixed; all Global X/Z translations fixed; Only the explicitly listed sensor components are free.",
+  "aligned_sensors": [
+    {
+      "system": 31,
+      "layer": 1,
+      "volume_id": 272631839,
+      "geometry_id": 216173056991691039,
+      "components": [
+        "global_y",
+        "global_rx",
+        "global_ry",
+        "global_rz"
+      ]
+    },
+    {
+      "system": 31,
+      "layer": 2,
+      "volume_id": 272633887,
+      "geometry_id": 216173194430644511,
+      "components": [
+        "global_y",
+        "global_rx",
+        "global_ry",
+        "global_rz"
+      ]
+    },
+    {
+      "system": 31,
+      "layer": 3,
+      "volume_id": 272635935,
+      "geometry_id": 216173331869597983,
+      "components": [
+        "global_y",
+        "global_rx",
+        "global_ry",
+        "global_rz"
+      ]
+    }
+  ],
+  "fixed_reference_sensors": [
+    0,
+    4
+  ],
+  "fixed_components": [
+    "global_x",
+    "global_z"
+  ],
+  "correction_pivot": "sensitive_surface_center",
+  "rotation_composition": "left_global_exp",
+  "translation_convention": "world_translation",
+  "containment": {
+    "module_envelope": "preserve_clearance_air_growth",
+    "layer_envelope": "preserve_clearance_air_growth",
+    "sensitive_corners": 8
+  }
+}

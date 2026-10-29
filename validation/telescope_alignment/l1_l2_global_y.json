@@ -1,0 +1,9 @@
+{
+  "scope": "experimental_zero_field_material_free",
+  "convention": "physical Global Y translation in mm; no legacy label reuse",
+  "parameters": [
+    {"system": 31, "layer": 1, "axis": "global_y", "label": 700102},
+    {"system": 31, "layer": 2, "axis": "global_y", "label": 700202}
+  ],
+  "fixed": "All other sensor parameters, including all L0/L3/L4 poses"
+}

@@ -1,0 +1,70 @@
+--- src/algorithms/tracking/TrackerMeasurementFromHits.cc
++++ localDetEICrecon/experimental/telescope/algorithms/tracking/TrackerMeasurementFromHits.cc
+@@ -38,13 +38,17 @@
+ #include <utility>
+ #include <vector>
+ 
+-#include "ActsGeometryProvider.h"
+-
+-namespace eicrecon {
++#include <algorithms/tracking/ActsGeometryProvider.h>
++
++namespace eicrecon::telescope {
+ 
+ void TrackerMeasurementFromHits::init() {
+   // ***** B0Tracker
+-  m_detid_b0tracker = m_dd4hepGeo->constant<unsigned long>("B0Tracker_Station_1_ID");
++  // A telescope has no B0 detector. Preserve the special tolerance when present.
++  const auto constants = m_dd4hepGeo->constants();
++  m_has_b0tracker = constants.find("B0Tracker_Station_1_ID") != constants.end();
++  if (m_has_b0tracker)
++    m_detid_b0tracker = m_dd4hepGeo->constant<unsigned long>("B0Tracker_Station_1_ID");
+   // ***** OuterMPGDBarrel
+   std::string readout = "OuterMPGDBarrelHits";
+   //  If "CartesianGridUV" segmentation, we need to rotate the cov. matrix.
+@@ -149,6 +153,7 @@
+     }
+ 
+     const auto* vol_ctx = m_converter->findContext(hit.getCellID());
++    if (!vol_ctx) throw std::runtime_error("TrackerHit has no DD4hep Volume context");
+     auto vol_id         = vol_ctx->identifier;
+ 
+     // trace("Hit preparation information: {}", hit_index);
+@@ -163,7 +168,21 @@
+       continue;
+     }
+     const Acts::Surface* surface = is->second;
+-    // variable surf_center not used anywhere;
++    // Telescope-only CartesianGridXZ packs sensor X/Z variances as xx/yy.
++    // Project these native sensor axes onto the actual ACTS local u/v frame.
++    if (hit_det == 31 && m_dd4hepGeo->readout("SiMAPSHits").segmentation().type() == "CartesianGridXZ") {
++      const auto origin = vol_ctx->localToWorld(dd4hep::Position(0, 0, 0));
++      const auto x = vol_ctx->localToWorld(dd4hep::Position(dd4hep::mm, 0, 0));
++      const auto z = vol_ctx->localToWorld(dd4hep::Position(0, 0, dd4hep::mm));
++      const Acts::Vector3 gx((x.x()-origin.x())/dd4hep::mm, (x.y()-origin.y())/dd4hep::mm, (x.z()-origin.z())/dd4hep::mm);
++      const Acts::Vector3 gz((z.x()-origin.x())/dd4hep::mm, (z.y()-origin.y())/dd4hep::mm, (z.z()-origin.z())/dd4hep::mm);
++      const auto rotation = surface->localToGlobalTransform(gctx).linear().eval();
++      Acts::SquareMatrix2 jacobian;
++      jacobian << rotation.col(0).dot(gx), rotation.col(0).dot(gz),
++                  rotation.col(1).dot(gx), rotation.col(1).dot(gz);
++      cov = (jacobian * cov * jacobian.transpose()).eval();
++    }
++
+ 
+     const auto& hit_pos = hit.getPosition(); // 3d position
+ 
+@@ -171,7 +190,7 @@
+     auto onSurfaceTolerance =
+         0.1 *
+         Acts::UnitConstants::um; // By default, ACTS uses 0.1 micron as the on surface tolerance
+-    if (hit_det == m_detid_b0tracker) {
++    if (m_has_b0tracker && hit_det == m_detid_b0tracker) {
+       onSurfaceTolerance =
+           1 *
+           Acts::UnitConstants::
+@@ -231,4 +250,4 @@
+         meas2Ds->size());
+ }
+ 
+-} // namespace eicrecon
++} // namespace eicrecon::telescope

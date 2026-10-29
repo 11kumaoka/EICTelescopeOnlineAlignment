@@ -1,0 +1,48 @@
+{
+  "schema": "native-workflow-v1",
+  "description": "Existing multi-sensor Scope A through the same public interface; a matching completed producer may be explicitly reused. No production activation or physics-validation claim.",
+  "geometry": {
+    "source": "native_barrel",
+    "initial": "nominal",
+    "global_y_mm": {
+      "1": 0.08,
+      "2": -0.06
+    },
+    "global_rotation_vector_rad": {
+      "1": [
+        0.001,
+        0.0005,
+        -0.0005
+      ]
+    }
+  },
+  "simulation": {
+    "particle": "e-",
+    "energy_gev": 1.0,
+    "beam": "broad",
+    "events": 2304,
+    "seed": 2026102503,
+    "position_mm": [
+      249.0,
+      0.0,
+      0.0
+    ],
+    "direction": [
+      1.0,
+      0.0,
+      0.0
+    ]
+  },
+  "alignment": {
+    "config": "validation/telescope_alignment/l1_y_rx_ry_rz_l2_y.json",
+    "chi2_cut": 1000.0
+  },
+  "controller": {
+    "validation_mode": "diagnostic",
+    "maximum_corrections": 1
+  },
+  "environment": {
+    "kind": "fixed-docker",
+    "image": "sha256:67c914295a92396040c3051360d70786df9c1ee8458264ad0b83cd1a8ccf3d05"
+  }
+}

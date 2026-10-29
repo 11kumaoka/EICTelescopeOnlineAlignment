@@ -1,0 +1,40 @@
+--- src/factories/tracking/CKFTracking_factory.h
++++ localDetEICrecon/experimental/telescope/factories/tracking/CKFTracking_factory.h
+@@ -13,17 +13,17 @@
+ #include <utility>
+ #include <vector>
+ 
+-#include "algorithms/tracking/CKFTracking.h"
+-#include "algorithms/tracking/CKFTrackingConfig.h"
++#include "../../algorithms/tracking/CKFTracking.h"
++#include "../../algorithms/tracking/CKFTrackingConfig.h"
+ #include "extensions/jana/JOmniFactory.h"
+ #include "services/geometry/acts/ACTSGeo_service.h"
+ 
+-namespace eicrecon {
++namespace eicrecon::telescope {
+ 
+ class CKFTracking_factory : public JOmniFactory<CKFTracking_factory, CKFTrackingConfig> {
+ 
+ private:
+-  using AlgoT = eicrecon::CKFTracking;
++  using AlgoT = eicrecon::telescope::CKFTracking;
+   std::unique_ptr<AlgoT> m_algo;
+ 
+   PodioInput<edm4eic::TrackSeed> m_seeds_input{this};
+@@ -42,6 +42,9 @@
+       this, "NumMeasurementsMin", config().numMeasurementsMin,
+       "Minimum number of measurements for ACTS CKF tracking"};
+ 
++  ParameterRef<bool> m_electronHypothesis{this, "ElectronHypothesis", config().electronHypothesis,
++      "Use the electron hypothesis; false retains the upstream pion default"};
++
+   Service<ACTSGeo_service> m_ACTSGeoSvc{this};
+ 
+ public:
+@@ -59,4 +62,4 @@
+   }
+ };
+ 
+-} // namespace eicrecon
++} // namespace eicrecon::telescope

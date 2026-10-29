@@ -1,0 +1,2 @@
+# Unified diff context lines contain a required leading space, including empty lines.
+validation/electron_hypothesis_before.patch -whitespace
