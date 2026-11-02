@@ -10,46 +10,32 @@ from geometry.placements import xml_number
 from research_common import stage,execute,digest,require,done,write_json
 
 from validation.telescope_closure import multi_sensor as multi
+from calibration.alignment.modes import is_four, is_three, rotation_labels, is_coupled, axis, rotation_label, labels, config_name
+from geometry.rotations import rotate_component, pose_checks, component_matrix, rotate_coupled_component
 
 INJECTED_RX_RAD=.0018
 INJECTED_RY_RAD=.005
 INJECTED_RZ_RAD=.005
 
 
-def is_four(mode):
-    return mode in ('l1_y_rx_ry_rz','l1_y_rx_ry_rz_negative','l1_y_rx_ry_rz_contained','l1_y_rx_ry_rz_contained_negative')
 
 
-def is_three(mode):
-    return mode in ('l1_rx_ry_rz','l1_rx_ry_rz_negative') or is_four(mode)
 
 
-def rotation_labels(mode):
-    return [700104,700105,700106] if is_three(mode) else [700105,700106]
 
 
 def fixture_shifts(mode):
     return {1:.150} if is_four(mode) else ({1:.150,2:.200} if mode=='l1_y_rx_l2_y' else {})
 
 
-def is_coupled(mode):
-    if multi.is_multi(mode):return True
-    return mode in ('l1_ry_rz','l1_ry_rz_negative') or is_three(mode)
 
 
 def injected_vector(mode):
     return injected_rotation(mode) if is_three(mode) else [0.,*injected_rotation(mode)]
 
 
-def axis(mode):
-    if multi.is_multi(mode):return 'xyz'
-    if is_three(mode):return 'xyz'
-    if is_coupled(mode):return 'yz'
-    return 'y' if mode in ('l1_ry','l1_ry_negative') else ('z' if mode in ('l1_rz','l1_rz_negative') else 'x')
 
 
-def rotation_label(mode):
-    return {'x':700104,'y':700105,'z':700106}[axis(mode)]
 
 
 def injected_rx(mode):
@@ -66,99 +52,12 @@ def injected_rotation(mode):
     return -magnitude if mode.endswith('_negative') else magnitude
 
 
-def labels(mode):
-    if multi.is_multi(mode):return multi.labels(mode)
-    if is_four(mode):return [700102,700104,700105,700106]
-    if is_three(mode):return [700104,700105,700106]
-    if is_coupled(mode):return [700105,700106]
-    return [rotation_label(mode)] if mode!='l1_y_rx_l2_y' else [700102,700104,700202]
 
 
-def config_name(mode):
-    if multi.is_multi(mode):return multi.config_name(mode)
-    if is_four(mode):return 'l1_global_y_rx_ry_rz'
-    if is_three(mode):return 'l1_global_rx_ry_rz'
-    if is_coupled(mode):return 'l1_global_ry_rz'
-    return 'l1_y_rx_l2_y' if mode=='l1_y_rx_l2_y' else 'l1_global_r'+axis(mode)
 
 
-def rotate_component(component,increment,axis='x'):
-    """Restricted left-Global Exp(dw), current sensitive-center pivot.
-
-    Actual DD4hep probes establish Rx = -(XML y + pi/2) and
-    Ry = -(XML x + pi/2) on their separate one-axis charts. Compositions
-    outside each subgroup are rejected. Rz uses the independently verified
-    alternate chart x=0, y=-pi/2-Rz, z=pi/2; this is not a general serializer.
-    """
-    if axis in ('yz','xyz'):return rotate_coupled_component(component,increment,full=axis=='xyz')
-    if axis not in ('x','y','z') or not math.isfinite(increment):
-        raise ValueError('Only finite separate sensor Global Rx, Ry or Rz enabled')
-    r=component.find('rotation')
-    x,y,z=[xml_number(r.get(a,'0'),{'pi':math.pi}) for a in 'xyz']
-    if axis=='z':
-        # The alternate zero chart is physically identical to the nominal chart.
-        # Only the pure-Rz subgroup is admitted; never decompose a general pose.
-        nominal=abs(x+math.pi/2)<1e-12 and abs(y+math.pi/2)<1e-12 and abs(z)<1e-12
-        selected=abs(x)<1e-12 and abs(z-math.pi/2)<1e-12
-        if not (nominal or selected):raise ValueError('Unsupported composition outside the selected Rz chart')
-        current=0. if nominal else -(y+math.pi/2)
-        vector=rotation_log(multiply(rotation_exp((0.,0.,increment)),rotation_exp((0.,0.,current))))
-        if abs(vector[0])+abs(vector[1])>1e-12:raise ValueError('Outside pure-Rz subgroup')
-        r.set('x','0');r.set('y',f'{-math.pi/2-vector[2]:.17g}');r.set('z',f'{math.pi/2:.17g}')
-        return
-    if abs(z)>1e-12 or abs((x if axis=='x' else y)+math.pi/2)>1e-12:
-        raise ValueError('Unsupported composition outside the selected one-axis chart')
-    index=0 if axis=='x' else 1
-    current=[0.,0.,0.];current[index]=-((y if axis=='x' else x)+math.pi/2)
-    delta=[0.,0.,0.];delta[index]=increment
-    vector=rotation_log(multiply(rotation_exp(delta),rotation_exp(current)))
-    if sum(abs(v) for i,v in enumerate(vector) if i!=index)>1e-12:
-        raise ValueError('Outside selected one-axis subgroup')
-    r.set('y' if axis=='x' else 'x',f'{-math.pi/2-vector[index]:.17g}')
 
 
-def pose_checks(before, after, shifts, rx, axis='x'):
-    """Check actual DD4hep/ACTS sensor identity and rigid transforms."""
-    if len(before) != len(after):
-        raise ValueError("Sensor count changed")
-
-    for a, b in zip(before, after):
-        layer = a['layer']
-        vector = [0., 0., 0.]
-
-        if axis == 'xyz':
-            vector = rx.get(layer, [0., 0., 0.])
-        elif axis == 'yz':
-            vector[1:] = rx.get(layer, [0., 0.])
-        else:
-            vector['xyz'.index(axis)] = rx.get(layer, 0.)
-
-        q = np.array(rotation_exp(vector))
-
-        assert a['layer'] == b['layer']
-        assert a['volume_id'] == b['volume_id']
-        assert a['geometry_id'] == b['geometry_id']
-
-        np.testing.assert_allclose(
-            b['center_mm'],
-            np.array(a['center_mm']) + [0, shifts.get(layer, 0.), 0],
-            atol=1e-9,
-            rtol=0
-        )
-
-        np.testing.assert_allclose(
-            b['acts_rotation'],
-            q @ np.array(a['acts_rotation']),
-            atol=2e-12,
-            rtol=0
-        )
-
-        np.testing.assert_allclose(
-            b['dd4hep_rotation'],
-            q @ np.array(a['dd4hep_rotation']),
-            atol=2e-12,
-            rtol=0
-        )
 
 
 def physical_derivatives(args,reconstruction="nominal"):
@@ -201,14 +100,14 @@ def physical_derivatives(args,reconstruction="nominal"):
 
 def correct(args):
     from validation.telescope_closure.closure import displaced_xml,environment
-    from alignment.pede import read_pede
+    from calibration.alignment.pede import read_pede
     require(args.result,'solve');p=stage(args.result,'correction')
     values=read_pede(args.result/'solve/millepede.res')
     shifts={l:values[k] for l,k in [(1,700102),(2,700202)] if k in values}
     rotations=({} if multi.is_multi(args.mode) else {1:[values[k] for k in rotation_labels(args.mode)] if is_coupled(args.mode) else values[rotation_label(args.mode)]})
     if multi.is_multi(args.mode):shifts,rotations=multi.pose_increments(values)
     nominal=args.result/'geometry/fixtures/nominal.xml'
-    from calibration.native_operations import correct as operation,GeometrySafetyError
+    from geometry.operations import correct as operation, GeometrySafetyError
     base=json.loads((args.result/'data/control/channels_truth.json').read_text())['sensors']
     try:operation(args.build,p/'corrected.xml',nominal,base,values,args.mode)
     except GeometrySafetyError as error:raise AssertionError(str(error)) from error
@@ -221,14 +120,14 @@ def correct(args):
 def refine(args):
     """One explicitly requested finite relinearization; never a Controller loop."""
     from validation.telescope_closure.closure import displaced_xml,environment
-    from alignment.pede import read_pede
+    from calibration.alignment.pede import read_pede
     if not (is_four(args.mode) or multi.is_multi(args.mode)) or not args.refine_once:raise ValueError('One refinement requires the explicit four-parameter opt-in')
     require(args.result,'postsolve');require(args.result,'correction')
     p=stage(args.result,'refinement');values=read_pede(args.result/'postsolve/millepede.res')
     if multi.is_multi(args.mode):shifts,rotations=multi.pose_increments(values)
     else:shifts={1:values[700102]};rotations={1:[values[k] for k in rotation_labels(args.mode)]}
     parent=args.result/'correction/corrected.xml'
-    from calibration.native_operations import correct as operation,GeometrySafetyError
+    from geometry.operations import correct as operation, GeometrySafetyError
     previous=json.loads((args.result/'correction/geometry_audit/geometry.json').read_text())['sensors']
     try:operation(args.build,p/'refined.xml',parent,previous,values,args.mode)
     except GeometrySafetyError as error:raise AssertionError(str(error)) from error
@@ -247,8 +146,8 @@ def check(args):
     import ROOT
     from podio import reading
     from validation.telescope_closure.closure import channel_values,channel_digest
-    from validation.telescope_alignment.check import records,profile
-    from alignment.pede import read_pede
+    from calibration.alignment.mille import records,profile
+    from calibration.alignment.pede import read_pede
     for name in ('geometry','data','nominal','physical_derivatives','corrected_physical_derivatives','solve','correction','corrected','postsolve','control','controlsolve'):require(args.result,name)
     p=stage(args.result,args.validation_name)
     refined=getattr(args,'refine_once',False)
@@ -483,56 +382,8 @@ def check(args):
     write_json(p/'report.json',result);done(p,passed=True)
 
 
-def component_matrix(component):
-    """Effective sensitive-to-module basis, checked against actual pinned DD4hep.
-
-    This telescope parent/module frame is fixed by its existing geometry fixture.
-    It is not a replacement geometry provider or a generic detector adapter.
-    """
-    r=component.find('rotation')
-    x,y,z=[xml_number(r.get(a,'0'),{'pi':math.pi}) for a in 'xyz']
-    return np.array(multiply(rotation_exp((x,0,0)),multiply(rotation_exp((0,y,0)),rotation_exp((0,0,z)))))
 
 
-def rotate_coupled_component(component,increment,full=False):
-    """Serialize a finite physical left-Global rotation-vector update.
-
-    The two-axis scope retains known commutator Rx but never fits Rx. The explicit
-    full scope permits all three components of a selected sensor. General singular Euler
-    extraction is refused; exact one-axis targets use validated restricted charts.
-    """
-    from validation.telescope_closure.closure import MODULE_TO_GLOBAL
-    parent=np.array(MODULE_TO_GLOBAL)
-    delta=np.array(increment,dtype=float)
-    if delta.shape != ((3,) if full else (2,)) or not np.isfinite(delta).all():
-        raise ValueError('Invalid selected sensor Global rotation-vector increment')
-    nominal=np.array(multiply(rotation_exp((-math.pi/2,0,0)),rotation_exp((0,-math.pi/2,0))))
-    current=component_matrix(component)
-    pose=parent@current@nominal.T@parent.T
-    w=np.array(rotation_log(pose.tolist()))
-    if not np.isfinite(w).all() or (not full and abs(w[0]) > 1e-4):
-        raise ValueError('Invalid current rotation or unsupported two-axis scope')
-    target=np.array(rotation_exp(delta if full else [0.,*delta]))@parent@current
-    local=parent.T@target
-    cy=math.hypot(local[0,0],local[0,1])
-    if cy<1e-6:
-        physical=np.array(rotation_log((target@nominal.T@parent.T).tolist()))
-        if full and abs(physical[1])+abs(physical[2])<1e-12:
-            angles=(-math.pi/2,-math.pi/2-physical[0],0.)
-        elif abs(physical[0])+abs(physical[2])<1e-12:
-            angles=(-math.pi/2-physical[1],-math.pi/2,0.)
-        elif abs(physical[0])+abs(physical[1])<1e-12:
-            angles=(0.,-math.pi/2-physical[2],math.pi/2)
-        else:raise ValueError('Ambiguous near-singular coupled serialization chart')
-    else:
-        angles=(math.atan2(-local[1,2],local[2,2]),
-                math.atan2(local[0,2],cy),math.atan2(-local[0,1],local[0,0]))
-    candidate=copy.deepcopy(component)
-    for name,value in zip('xyz',angles):candidate.find('rotation').set(name,f'{value:.17g}')
-    if not np.allclose(parent@component_matrix(candidate),target,atol=5e-13,rtol=0):
-        raise ValueError('Coupled target matrix cannot be serialized safely')
-    # Mutation follows successful target-matrix and chart validation.
-    for name in 'xyz':component.find('rotation').set(name,candidate.find('rotation').get(name))
 
 
 def coupled_pose_gate(args):
@@ -581,7 +432,7 @@ def coupled_physical_derivatives(args,reconstruction):
     if reconstruction=='nominal':
         if (args.result/'coupled_pose').exists():require(args.result,'coupled_pose')
         else:coupled_pose_gate(args)
-    from calibration.native_operations import physical_derivatives as operation
+    from calibration.alignment.derivatives import physical_derivatives as operation
     output=args.result/('physical_derivatives' if reconstruction=='nominal' else ('refined_physical_derivatives' if reconstruction=='refined' else 'corrected_physical_derivatives'))
     geometry=args.result/('geometry/fixtures/nominal.xml' if reconstruction=='nominal' else ('refinement/refined.xml' if reconstruction=='refined' else 'correction/corrected.xml'))
     base_path=args.result/('data/control/channels_truth.json' if reconstruction=='nominal' else ('refinement/geometry_audit/geometry.json' if reconstruction=='refined' else 'correction/geometry_audit/geometry.json'))

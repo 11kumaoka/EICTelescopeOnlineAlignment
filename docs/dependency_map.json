@@ -1,126 +1,188 @@
 {
-  "scope": "Conservative local dependency map: function-local imports, dynamic configuration, CMake and quoted includes. Installed components come from pinned image.",
+  "scope": "Structural-refactor audit: all local AST imports including function-local imports; CMake translation units; quoted includes; explicit runtime resources. Installed components come from the pinned image.",
   "python_local_imports": {
-    "alignment/__init__.py": [],
-    "alignment/pede.py": [],
     "calibration/__init__.py": [],
-    "calibration/convergence.py": [],
-    "calibration/native_controller.py": [
+    "calibration/alignment/__init__.py": [],
+    "calibration/alignment/derivatives.py": [
+      "calibration/alignment/__init__.py",
+      "calibration/alignment/modes.py",
+      "calibration/alignment/sensors.py",
+      "calibration/reconstruction/operations.py",
+      "geometry/operations.py",
+      "geometry/rotations.py",
+      "research_common.py"
+    ],
+    "calibration/alignment/information.py": [
+      "research_common.py"
+    ],
+    "calibration/alignment/mille.py": [],
+    "calibration/alignment/modes.py": [
+      "calibration/alignment/__init__.py",
+      "calibration/alignment/sensors.py"
+    ],
+    "calibration/alignment/observability.py": [
+      "geometry/transforms.py",
+      "research_common.py"
+    ],
+    "calibration/alignment/operations.py": [
+      "calibration/alignment/information.py",
+      "calibration/alignment/mille.py",
+      "calibration/alignment/modes.py",
+      "calibration/alignment/observability.py",
+      "calibration/alignment/pede.py",
+      "calibration/alignment/sensors.py",
+      "calibration/policy.py",
+      "calibration/reconstruction/operations.py",
+      "research_common.py"
+    ],
+    "calibration/alignment/pede.py": [],
+    "calibration/alignment/sensors.py": [
+      "geometry/safety.py",
+      "research_common.py"
+    ],
+    "calibration/controller.py": [
+      "calibration/alignment/__init__.py",
+      "calibration/alignment/derivatives.py",
+      "calibration/alignment/mille.py",
+      "calibration/alignment/operations.py",
+      "calibration/alignment/sensors.py",
       "calibration/convergence.py",
-      "calibration/native_operations.py",
-      "calibration/native_policy.py",
+      "calibration/policy.py",
       "calibration/queue_manager.py",
+      "calibration/reconstruction/__init__.py",
+      "calibration/reconstruction/operations.py",
       "calibration/runner.py",
+      "geometry/__init__.py",
+      "geometry/operations.py",
       "geometry/transforms.py",
-      "research_common.py",
-      "validation/telescope_alignment/check.py",
-      "validation/telescope_closure/multi_sensor.py"
+      "research_common.py"
     ],
-    "calibration/native_operations.py": [
-      "alignment/pede.py",
-      "calibration/native_policy.py",
-      "geometry/native_safety.py",
-      "geometry/placements.py",
-      "geometry/transforms.py",
-      "research_common.py",
-      "validation/telescope_alignment/check.py",
-      "validation/telescope_closure/multi_information.py",
-      "validation/telescope_closure/multi_sensor.py",
-      "validation/telescope_closure/observability.py",
-      "validation/telescope_closure/rotation.py"
-    ],
-    "calibration/native_policy.py": [],
+    "calibration/convergence.py": [],
+    "calibration/policy.py": [],
     "calibration/queue_manager.py": [],
+    "calibration/reconstruction/__init__.py": [],
+    "calibration/reconstruction/operations.py": [
+      "research_common.py"
+    ],
     "calibration/runner.py": [
       "research_common.py"
     ],
     "calibration/workflow.py": [
-      "calibration/native_controller.py",
-      "calibration/native_operations.py",
-      "digitization/native.py",
+      "calibration/controller.py",
+      "geometry/operations.py",
+      "geometry/prepare.py",
       "research_common.py",
-      "simulation/native.py",
-      "validation/telescope_geometry/prepare.py"
-    ],
-    "digitization/__init__.py": [],
-    "digitization/native.py": [
-      "calibration/native_operations.py",
-      "research_common.py",
-      "simulation/native.py"
+      "simulation/digitization.py",
+      "simulation/geant4.py"
     ],
     "environment/setup_dependencies.py": [],
     "geometry/__init__.py": [],
-    "geometry/native_safety.py": [
+    "geometry/operations.py": [
+      "calibration/alignment/__init__.py",
+      "calibration/alignment/modes.py",
+      "calibration/alignment/sensors.py",
+      "calibration/reconstruction/operations.py",
+      "geometry/placements.py",
+      "geometry/rotations.py",
+      "geometry/safety.py",
+      "geometry/transforms.py",
+      "research_common.py"
+    ],
+    "geometry/placements.py": [],
+    "geometry/prepare.py": [],
+    "geometry/rotations.py": [
+      "geometry/operations.py",
       "geometry/placements.py",
       "geometry/transforms.py"
     ],
-    "geometry/placements.py": [],
+    "geometry/safety.py": [
+      "geometry/placements.py",
+      "geometry/transforms.py"
+    ],
     "geometry/transforms.py": [],
     "research_common.py": [],
     "simulation/__init__.py": [],
-    "simulation/native.py": [
-      "calibration/native_operations.py",
+    "simulation/digitization.py": [
+      "calibration/reconstruction/operations.py",
+      "research_common.py",
+      "simulation/geant4.py"
+    ],
+    "simulation/geant4.py": [
+      "calibration/reconstruction/operations.py",
+      "geometry/operations.py",
       "research_common.py"
     ],
+    "studies/alignment_statistics/analyze_full_42d_information.py": [
+      "studies/alignment_statistics/fit_18d_linearized_scan.py"
+    ],
     "studies/alignment_statistics/compare_hit_residuals.py": [],
+    "studies/alignment_statistics/fit_18d_linearized_scan.py": [],
+    "studies/alignment_statistics/plan_full_dof_scan.py": [],
+    "studies/alignment_statistics/plot_18d_individual_cohorts.py": [],
     "studies/alignment_statistics/plot_geometry_accuracy.py": [
       "geometry/transforms.py",
       "studies/alignment_statistics/scan_statistics.py"
     ],
     "studies/alignment_statistics/scan_statistics.py": [
-      "calibration/native_controller.py",
-      "calibration/native_operations.py",
-      "digitization/native.py",
-      "geometry/transforms.py"
+      "calibration/controller.py",
+      "calibration/reconstruction/operations.py",
+      "geometry/transforms.py",
+      "simulation/digitization.py"
+    ],
+    "studies/alignment_statistics/test_linearized_diagnostics.py": [
+      "studies/alignment_statistics/analyze_full_42d_information.py",
+      "studies/alignment_statistics/fit_18d_linearized_scan.py",
+      "studies/alignment_statistics/plan_full_dof_scan.py",
+      "studies/alignment_statistics/plot_18d_individual_cohorts.py"
     ],
     "studies/alignment_statistics/test_statistics.py": [
-      "calibration/native_controller.py",
+      "calibration/controller.py",
       "studies/alignment_statistics/compare_hit_residuals.py",
       "studies/alignment_statistics/scan_statistics.py"
     ],
     "validation/__init__.py": [],
-    "validation/telescope_alignment/check.py": [],
+    "validation/telescope_alignment/check.py": [
+      "calibration/alignment/mille.py"
+    ],
     "validation/telescope_closure/bias.py": [],
     "validation/telescope_closure/closure.py": [
-      "alignment/pede.py",
-      "calibration/native_operations.py",
+      "calibration/alignment/mille.py",
+      "calibration/alignment/operations.py",
+      "calibration/alignment/pede.py",
+      "calibration/reconstruction/operations.py",
+      "geometry/operations.py",
+      "geometry/prepare.py",
       "geometry/transforms.py",
       "research_common.py",
-      "validation/telescope_alignment/check.py",
       "validation/telescope_closure/multi_sensor.py",
-      "validation/telescope_closure/rotation.py",
-      "validation/telescope_geometry/prepare.py"
+      "validation/telescope_closure/rotation.py"
     ],
     "validation/telescope_closure/containment.py": [],
-    "validation/telescope_closure/multi_information.py": [
-      "research_common.py"
-    ],
     "validation/telescope_closure/multi_preflight.py": [
+      "calibration/alignment/information.py",
       "geometry/transforms.py",
       "research_common.py",
       "validation/telescope_closure/closure.py",
       "validation/telescope_closure/containment.py",
-      "validation/telescope_closure/multi_information.py",
       "validation/telescope_closure/multi_sensor.py",
       "validation/telescope_closure/rotation.py"
     ],
     "validation/telescope_closure/multi_sensor.py": [
-      "geometry/native_safety.py",
+      "calibration/alignment/sensors.py",
       "research_common.py",
       "validation/telescope_closure/closure.py",
       "validation/telescope_closure/rotation.py"
     ],
-    "validation/telescope_closure/observability.py": [
-      "geometry/transforms.py",
-      "research_common.py"
-    ],
     "validation/telescope_closure/rotation.py": [
-      "alignment/pede.py",
-      "calibration/native_operations.py",
+      "calibration/alignment/derivatives.py",
+      "calibration/alignment/mille.py",
+      "calibration/alignment/modes.py",
+      "calibration/alignment/pede.py",
+      "geometry/operations.py",
       "geometry/placements.py",
+      "geometry/rotations.py",
       "geometry/transforms.py",
       "research_common.py",
-      "validation/telescope_alignment/check.py",
       "validation/telescope_closure/closure.py",
       "validation/telescope_closure/multi_sensor.py"
     ],
@@ -128,109 +190,869 @@
     "validation/telescope_factories/prepare.py": [],
     "validation/telescope_factories/upstream_diff.py": [],
     "validation/telescope_geometry/check.py": [],
-    "validation/telescope_geometry/prepare.py": [],
-    "validation/test_environment_launcher.py": [],
-    "validation/test_native_bias_diagnostics.py": [
+    "validation/test_bias_diagnostics.py": [
       "validation/telescope_closure/bias.py"
     ],
-    "validation/test_native_containment.py": [
+    "validation/test_calibration_controller.py": [
+      "calibration/__init__.py",
+      "calibration/controller.py",
+      "research_common.py"
+    ],
+    "validation/test_calibration_workflow.py": [
+      "calibration/__init__.py",
+      "calibration/controller.py",
+      "calibration/workflow.py",
+      "research_common.py",
+      "validation/__init__.py",
+      "validation/test_digitization.py"
+    ],
+    "validation/test_containment.py": [
       "geometry/transforms.py",
       "validation/telescope_closure/containment.py",
       "validation/telescope_closure/rotation.py"
     ],
-    "validation/test_native_controller.py": [
-      "calibration/native_controller.py",
-      "research_common.py"
-    ],
-    "validation/test_native_convergence.py": [
+    "validation/test_convergence.py": [
       "calibration/convergence.py"
     ],
-    "validation/test_native_diagnostic.py": [
+    "validation/test_diagnostic.py": [
+      "calibration/__init__.py",
+      "calibration/controller.py",
       "calibration/convergence.py",
-      "calibration/native_controller.py",
-      "calibration/native_policy.py",
-      "validation/test_native_controller.py"
+      "calibration/policy.py",
+      "validation/test_calibration_controller.py"
     ],
-    "validation/test_native_digitization.py": [
-      "digitization/native.py",
+    "validation/test_digitization.py": [
       "research_common.py",
-      "simulation/native.py"
+      "simulation/digitization.py",
+      "simulation/geant4.py"
     ],
-    "validation/test_native_geant4.py": [
-      "calibration/native_controller.py",
-      "simulation/native.py"
+    "validation/test_environment_launcher.py": [],
+    "validation/test_geant4.py": [
+      "calibration/controller.py",
+      "simulation/geant4.py"
     ],
-    "validation/test_native_geometry_safety.py": [
-      "calibration/native_operations.py",
-      "geometry/native_safety.py",
+    "validation/test_geometry_correction.py": [
+      "geometry/operations.py"
+    ],
+    "validation/test_geometry_safety.py": [
+      "geometry/operations.py",
+      "geometry/safety.py",
       "geometry/transforms.py"
     ],
-    "validation/test_native_multi_sensor.py": [
+    "validation/test_multi_sensor.py": [
       "geometry/transforms.py",
       "validation/telescope_closure/closure.py",
       "validation/telescope_closure/multi_sensor.py",
       "validation/telescope_closure/rotation.py"
     ],
-    "validation/test_native_operations.py": [
-      "calibration/native_operations.py"
-    ],
-    "validation/test_native_pede_covariance.py": [
-      "calibration/native_operations.py",
+    "validation/test_pede_covariance.py": [
+      "calibration/alignment/__init__.py",
+      "calibration/alignment/operations.py",
       "research_common.py"
     ],
-    "validation/test_native_rotation_scope.py": [
+    "validation/test_rotation_scope.py": [
       "geometry/transforms.py",
       "validation/telescope_alignment/check.py",
       "validation/telescope_closure/closure.py",
       "validation/telescope_closure/rotation.py"
     ],
-    "validation/test_native_serialization.py": [
-      "calibration/native_controller.py"
+    "validation/test_serialization.py": [
+      "calibration/__init__.py",
+      "calibration/controller.py"
     ],
-    "validation/test_native_single_y.py": [
+    "validation/test_single_y.py": [
+      "calibration/alignment/information.py",
       "validation/telescope_closure/closure.py",
-      "validation/telescope_closure/multi_information.py",
       "validation/telescope_closure/multi_sensor.py"
     ],
-    "validation/test_native_source_identity.py": [
-      "calibration/native_controller.py"
+    "validation/test_so3.py": [
+      "geometry/transforms.py"
     ],
-    "validation/test_native_three_sensor.py": [
+    "validation/test_source_identity.py": [
+      "calibration/__init__.py",
+      "calibration/controller.py"
+    ],
+    "validation/test_three_sensor.py": [
       "geometry/transforms.py",
       "validation/telescope_closure/closure.py",
       "validation/telescope_closure/multi_preflight.py",
       "validation/telescope_closure/multi_sensor.py",
       "validation/telescope_closure/rotation.py"
     ],
-    "validation/test_native_workflow.py": [
-      "calibration/native_controller.py",
-      "calibration/workflow.py",
-      "research_common.py",
-      "validation/test_native_digitization.py"
+    "validation/test_transforms.py": [
+      "geometry/transforms.py"
     ],
-    "validation/test_native_y_rotations.py": [
+    "validation/test_y_rotations.py": [
       "geometry/transforms.py",
       "research_common.py",
       "validation/telescope_closure/closure.py",
       "validation/telescope_closure/rotation.py"
+    ]
+  },
+  "python_import_statements": {
+    "calibration/__init__.py": [],
+    "calibration/alignment/__init__.py": [],
+    "calibration/alignment/derivatives.py": [
+      "import json",
+      "import numpy as np",
+      "from research_common import execute, stage, done, write_json",
+      "from geometry.operations import validate_geometry, displaced_xml",
+      "from calibration.reconstruction.operations import environment",
+      "from calibration.alignment import sensors as multi",
+      "from calibration.alignment.modes import is_four, is_three, labels, axis",
+      "from geometry.rotations import pose_checks"
     ],
-    "validation/test_so3.py": [
-      "geometry/transforms.py"
+    "calibration/alignment/information.py": [
+      "import argparse",
+      "import json",
+      "import sys",
+      "from collections import Counter",
+      "from pathlib import Path",
+      "import numpy as np",
+      "from research_common import digest, write_json"
     ],
-    "validation/test_transforms.py": [
-      "geometry/transforms.py"
+    "calibration/alignment/mille.py": [
+      "import struct",
+      "import numpy as np"
+    ],
+    "calibration/alignment/modes.py": [
+      "from calibration.alignment import sensors as multi"
+    ],
+    "calibration/alignment/observability.py": [
+      "import argparse",
+      "import json",
+      "import sys",
+      "from pathlib import Path",
+      "import numpy as np",
+      "from research_common import write_json, digest",
+      "from geometry.transforms import rotation_exp"
+    ],
+    "calibration/alignment/operations.py": [
+      "import json",
+      "import numpy as np",
+      "from research_common import REPO, execute, stage, done, require, write_json",
+      "from calibration.reconstruction.operations import environment",
+      "from calibration.alignment.pede import read_pede",
+      "from calibration.alignment.mille import records, profile",
+      "from calibration.alignment.sensors import is_multi, mapping",
+      "from calibration.policy import require_precision",
+      "import numpy as np",
+      "from calibration.alignment.modes import labels",
+      "from calibration.alignment.observability import analyze",
+      "from calibration.alignment.modes import axis, is_coupled, is_three, is_four",
+      "from calibration.alignment.information import analyze",
+      "from calibration.policy import solver_diagnostics",
+      "from decimal import Decimal"
+    ],
+    "calibration/alignment/pede.py": [],
+    "calibration/alignment/sensors.py": [
+      "import json",
+      "import math",
+      "from pathlib import Path",
+      "from research_common import REPO",
+      "from geometry.safety import normalize_air_envelopes",
+      "import copy",
+      "import xml.etree.ElementTree as ET",
+      "from geometry.safety import AIR_ENVELOPE_CONVENTION"
+    ],
+    "calibration/controller.py": [
+      "import argparse",
+      "import hashlib",
+      "import json",
+      "import math",
+      "import os",
+      "from pathlib import Path",
+      "import re",
+      "import shutil",
+      "import signal",
+      "import subprocess",
+      "import sys",
+      "import threading",
+      "import traceback",
+      "from research_common import REPO, digest, write_json",
+      "from calibration.queue_manager import exclusive, recover_guard",
+      "from calibration.runner import stage as supervised_stage",
+      "from calibration.reconstruction.operations import environment",
+      "from calibration.alignment.sensors import MODE_CONFIG, configuration",
+      "from geometry import operations as geometry_operations",
+      "from calibration.reconstruction import operations as reconstruction_operations",
+      "from calibration.alignment import operations as alignment_operations",
+      "from calibration.alignment import derivatives",
+      "import numpy as np",
+      "import numpy as np",
+      "from calibration.alignment.mille import records, profile",
+      "from calibration.alignment.sensors import mapping",
+      "from calibration.policy import solver_diagnostics",
+      "from calibration.reconstruction.operations import channel_values, channel_digest",
+      "from calibration.alignment.sensors import references",
+      "from podio import reading",
+      "from calibration.convergence import evaluate_alignment",
+      "from geometry.transforms import rotation_log",
+      "import numpy as np",
+      "from calibration.policy import QualityGateError",
+      "import numpy as np",
+      "from calibration.policy import QualityGateError"
+    ],
+    "calibration/convergence.py": [
+      "import math",
+      "import numpy as np"
+    ],
+    "calibration/policy.py": [
+      "import math",
+      "import re"
+    ],
+    "calibration/queue_manager.py": [
+      "from contextlib import contextmanager",
+      "import fcntl",
+      "import json",
+      "import os",
+      "import socket",
+      "import sys",
+      "import sqlite3",
+      "import time",
+      "from pathlib import Path"
+    ],
+    "calibration/reconstruction/__init__.py": [],
+    "calibration/reconstruction/operations.py": [
+      "import os",
+      "import json",
+      "import hashlib",
+      "import struct",
+      "from research_common import REPO, execute, stage, done, digest",
+      "import ROOT",
+      "from podio import reading"
+    ],
+    "calibration/runner.py": [
+      "import os",
+      "import signal",
+      "import subprocess",
+      "import sys",
+      "from research_common import REPO, write_json"
+    ],
+    "calibration/workflow.py": [
+      "import argparse",
+      "import copy",
+      "import json",
+      "import math",
+      "import os",
+      "from pathlib import Path",
+      "import shutil",
+      "import sys",
+      "import traceback",
+      "from research_common import REPO, digest, done, execute, require, write_json",
+      "from simulation.geant4 import gun_configuration",
+      "from calibration.controller import selected_mode",
+      "from simulation.digitization import checked_simulation_binding",
+      "from simulation.geant4 import gun_configuration",
+      "from calibration.controller import build_identity, source_identity",
+      "from simulation.geant4 import software_snapshot",
+      "from calibration.controller import source_identity",
+      "from geometry.operations import displaced_xml, geometry_audit",
+      "from geometry.prepare import prepare",
+      "from simulation.digitization import checked_simulation_binding",
+      "import ROOT",
+      "from calibration.controller import verify",
+      "from calibration.controller import check_identity, checkpoints, verify"
+    ],
+    "environment/setup_dependencies.py": [
+      "import argparse, json, subprocess, os",
+      "from pathlib import Path"
+    ],
+    "geometry/__init__.py": [],
+    "geometry/operations.py": [
+      "import copy",
+      "import itertools",
+      "import json",
+      "import math",
+      "import xml.etree.ElementTree as ET",
+      "import numpy as np",
+      "from research_common import REPO, execute, stage, done, require, write_json, digest",
+      "from geometry.transforms import matvec, transpose",
+      "from calibration.reconstruction.operations import environment",
+      "from geometry.safety import layer_specs, values, LENGTH_TOLERANCE_MM",
+      "from geometry.placements import xml_number",
+      "from calibration.alignment import sensors as multi",
+      "from calibration.alignment.modes import axis",
+      "from calibration.alignment import sensors as multi",
+      "from calibration.alignment.modes import axis, is_coupled, labels, rotation_label, rotation_labels",
+      "from geometry.rotations import pose_checks",
+      "from geometry.placements import xml_number",
+      "from geometry.safety import canonical_layer",
+      "from geometry.rotations import component_matrix",
+      "from geometry.placements import xml_number",
+      "from geometry.rotations import rotate_component"
+    ],
+    "geometry/placements.py": [
+      "import ast",
+      "import math"
+    ],
+    "geometry/prepare.py": [
+      "import argparse",
+      "import hashlib",
+      "import json",
+      "import math",
+      "from pathlib import Path",
+      "import xml.etree.ElementTree as E"
+    ],
+    "geometry/rotations.py": [
+      "import math",
+      "import copy",
+      "import numpy as np",
+      "from geometry.transforms import rotation_exp, rotation_log, multiply, transpose",
+      "from geometry.placements import xml_number",
+      "from geometry.operations import MODULE_TO_GLOBAL"
+    ],
+    "geometry/safety.py": [
+      "import math",
+      "import numpy as np",
+      "from geometry.placements import xml_number",
+      "from geometry.transforms import multiply, rotation_exp"
+    ],
+    "geometry/transforms.py": [
+      "from dataclasses import dataclass",
+      "import math"
+    ],
+    "research_common.py": [
+      "import argparse",
+      "import hashlib",
+      "import json",
+      "import os",
+      "from pathlib import Path",
+      "import subprocess"
+    ],
+    "simulation/__init__.py": [],
+    "simulation/digitization.py": [
+      "import argparse",
+      "import hashlib",
+      "import json",
+      "from pathlib import Path",
+      "import xml.etree.ElementTree as ET",
+      "from research_common import REPO, digest, done, execute, require, write_json",
+      "from podio import reading",
+      "from calibration.reconstruction.operations import environment",
+      "from simulation.geant4 import gun_arguments",
+      "import ROOT",
+      "from podio import root_io",
+      "from podio.frame import Frame",
+      "import ROOT",
+      "from podio import reading",
+      "from calibration.reconstruction.operations import channel_digest, channel_values"
+    ],
+    "simulation/geant4.py": [
+      "import argparse",
+      "import copy",
+      "import math",
+      "import importlib.util",
+      "import os",
+      "import platform",
+      "import subprocess",
+      "from pathlib import Path",
+      "import shutil",
+      "import xml.etree.ElementTree as ET",
+      "from research_common import REPO, digest, done, execute, stage, write_json",
+      "import ROOT",
+      "from podio import reading",
+      "from calibration.reconstruction.operations import environment",
+      "from geometry.operations import geometry_audit"
     ],
     "studies/alignment_statistics/analyze_full_42d_information.py": [
-      "studies/alignment_statistics/fit_18d_linearized_scan.py"
+      "import argparse",
+      "import hashlib",
+      "import json",
+      "import math",
+      "from pathlib import Path",
+      "import sys",
+      "import numpy as np",
+      "from studies.alignment_statistics.fit_18d_linearized_scan import checked_input",
+      "import ROOT"
     ],
-    "studies/alignment_statistics/fit_18d_linearized_scan.py": [],
-    "studies/alignment_statistics/plan_full_dof_scan.py": [],
-    "studies/alignment_statistics/plot_18d_individual_cohorts.py": [],
+    "studies/alignment_statistics/compare_hit_residuals.py": [
+      "import argparse",
+      "from collections import Counter",
+      "import hashlib",
+      "import json",
+      "import math",
+      "from pathlib import Path",
+      "from podio import reading",
+      "import ROOT",
+      "from podio import reading"
+    ],
+    "studies/alignment_statistics/fit_18d_linearized_scan.py": [
+      "import argparse",
+      "import hashlib",
+      "import json",
+      "import math",
+      "import re",
+      "from pathlib import Path",
+      "import sys",
+      "import numpy as np",
+      "import ROOT"
+    ],
+    "studies/alignment_statistics/plan_full_dof_scan.py": [
+      "import argparse",
+      "import json",
+      "from pathlib import Path"
+    ],
+    "studies/alignment_statistics/plot_18d_individual_cohorts.py": [
+      "import argparse",
+      "from collections import defaultdict",
+      "import hashlib",
+      "import json",
+      "import math",
+      "from pathlib import Path",
+      "import ROOT"
+    ],
+    "studies/alignment_statistics/plot_geometry_accuracy.py": [
+      "import argparse",
+      "import hashlib",
+      "import json",
+      "import sys",
+      "from pathlib import Path",
+      "import numpy as np",
+      "from geometry.transforms import rotation_log",
+      "from studies.alignment_statistics.scan_statistics import verified_final",
+      "import ROOT"
+    ],
+    "studies/alignment_statistics/scan_statistics.py": [
+      "import argparse",
+      "import hashlib",
+      "import json",
+      "import math",
+      "from pathlib import Path",
+      "import statistics",
+      "import subprocess",
+      "import sys",
+      "from calibration.controller import verify",
+      "from podio import reading",
+      "from simulation.digitization import write_channels",
+      "from calibration.reconstruction.operations import channel_values, channel_digest",
+      "from podio import reading",
+      "from simulation.digitization import write_channels",
+      "from calibration.reconstruction.operations import channel_values, channel_digest",
+      "import numpy as np",
+      "from geometry.transforms import rotation_log",
+      "import ROOT"
+    ],
     "studies/alignment_statistics/test_linearized_diagnostics.py": [
-      "studies/alignment_statistics/analyze_full_42d_information.py",
-      "studies/alignment_statistics/fit_18d_linearized_scan.py",
-      "studies/alignment_statistics/plan_full_dof_scan.py",
-      "studies/alignment_statistics/plot_18d_individual_cohorts.py"
+      "import copy",
+      "import hashlib",
+      "import json",
+      "import math",
+      "from pathlib import Path",
+      "import tempfile",
+      "from types import SimpleNamespace",
+      "import unittest",
+      "from unittest.mock import patch",
+      "import numpy as np",
+      "from studies.alignment_statistics import fit_18d_linearized_scan as fit",
+      "from studies.alignment_statistics import analyze_full_42d_information as information",
+      "from studies.alignment_statistics import plan_full_dof_scan as planner",
+      "import math",
+      "from studies.alignment_statistics import plot_18d_individual_cohorts as plotting",
+      "import math",
+      "from studies.alignment_statistics import plot_18d_individual_cohorts as plotting",
+      "from studies.alignment_statistics import plot_18d_individual_cohorts as plotting",
+      "from studies.alignment_statistics import plot_18d_individual_cohorts as plotting",
+      "import copy",
+      "from studies.alignment_statistics import plot_18d_individual_cohorts as plotting",
+      "from studies.alignment_statistics import plot_18d_individual_cohorts as plotting",
+      "import ROOT",
+      "from studies.alignment_statistics import plot_18d_individual_cohorts as plotting"
+    ],
+    "studies/alignment_statistics/test_statistics.py": [
+      "import json",
+      "import math",
+      "from pathlib import Path",
+      "import tempfile",
+      "import unittest",
+      "from studies.alignment_statistics import scan_statistics as scan",
+      "from calibration.controller import seal",
+      "from studies.alignment_statistics.compare_hit_residuals import bridge_raw",
+      "from studies.alignment_statistics.compare_hit_residuals import bridge_raw"
+    ],
+    "validation/__init__.py": [],
+    "validation/telescope_alignment/check.py": [
+      "import argparse",
+      "import hashlib",
+      "import json",
+      "from pathlib import Path",
+      "import struct",
+      "import numpy as np",
+      "from calibration.alignment.mille import records, profile"
+    ],
+    "validation/telescope_closure/bias.py": [
+      "import numpy as np"
+    ],
+    "validation/telescope_closure/closure.py": [
+      "import argparse",
+      "import copy",
+      "import hashlib",
+      "import json",
+      "import math",
+      "import os",
+      "from pathlib import Path",
+      "import struct",
+      "import sys",
+      "import xml.etree.ElementTree as ET",
+      "from research_common import execute, stage, done, require, write_json, digest",
+      "from geometry.transforms import matvec, transpose",
+      "from geometry.prepare import prepare",
+      "from calibration.alignment.pede import read_pede",
+      "from calibration.alignment.mille import records, profile",
+      "from geometry.operations import displaced_xml as operation",
+      "from calibration.reconstruction.operations import environment as operation",
+      "from calibration.reconstruction.operations import channel_values as operation",
+      "from calibration.reconstruction.operations import channel_digest as operation",
+      "import ROOT",
+      "from podio.frame import Frame",
+      "from podio import root_io",
+      "from validation.telescope_closure.multi_sensor import is_multi, fixture, aligned_sensors",
+      "from calibration.reconstruction.operations import reconstruct as operation",
+      "from calibration.alignment.operations import solve as operation",
+      "from geometry.operations import correct as operation, GeometrySafetyError",
+      "import numpy as np",
+      "import ROOT",
+      "from podio import reading",
+      "from validation.telescope_closure.multi_sensor import normalize_expanded_envelopes",
+      "from validation.telescope_closure.rotation import injected_rotation, axis, fixture_shifts",
+      "from validation.telescope_closure.rotation import config_name",
+      "from validation.telescope_closure.rotation import physical_derivatives",
+      "from validation.telescope_closure.rotation import correct as rotation_correct",
+      "from validation.telescope_closure.rotation import check as rotation_check",
+      "from validation.telescope_closure.rotation import is_four",
+      "from validation.telescope_closure.multi_sensor import is_multi",
+      "from validation.telescope_closure.rotation import coupled_pose_gate, is_coupled",
+      "from validation.telescope_closure.rotation import refine"
+    ],
+    "validation/telescope_closure/containment.py": [
+      "import itertools",
+      "import numpy as np"
+    ],
+    "validation/telescope_closure/multi_preflight.py": [
+      "import argparse",
+      "import itertools",
+      "import json",
+      "from pathlib import Path",
+      "import sys",
+      "import xml.etree.ElementTree as ET",
+      "import numpy as np",
+      "from geometry.transforms import rotation_exp",
+      "from research_common import REPO, digest, done, execute, stage, write_json",
+      "from validation.telescope_closure.closure import MODULE_TO_GLOBAL, displaced_xml, environment",
+      "from validation.telescope_closure.containment import corners_in_module",
+      "from calibration.alignment.information import analyze",
+      "from validation.telescope_closure.multi_sensor import aligned_sensors, fixture, injection, labels, mapping, pose_increments, xml_identity",
+      "from validation.telescope_closure.rotation import pose_checks"
+    ],
+    "validation/telescope_closure/multi_sensor.py": [
+      "import json",
+      "import math",
+      "from pathlib import Path",
+      "from calibration.alignment.sensors import MODE_CONFIG, is_multi, config_name, configuration, aligned_sensors, references, labels, mapping, pose_increments, normalize_expanded_envelopes, xml_identity",
+      "import json",
+      "import numpy as np",
+      "from research_common import stage, execute, done, write_json",
+      "from validation.telescope_closure.closure import displaced_xml, environment",
+      "from validation.telescope_closure.rotation import pose_checks"
+    ],
+    "validation/telescope_closure/rotation.py": [
+      "import json",
+      "import re",
+      "import copy",
+      "import xml.etree.ElementTree as ET",
+      "import math",
+      "import numpy as np",
+      "from geometry.transforms import rotation_exp, rotation_log, multiply, transpose",
+      "from geometry.placements import xml_number",
+      "from research_common import stage, execute, digest, require, done, write_json",
+      "from validation.telescope_closure import multi_sensor as multi",
+      "from calibration.alignment.modes import is_four, is_three, rotation_labels, is_coupled, axis, rotation_label, labels, config_name",
+      "from geometry.rotations import rotate_component, pose_checks, component_matrix, rotate_coupled_component",
+      "from validation.telescope_closure.closure import displaced_xml, environment",
+      "from validation.telescope_closure.closure import displaced_xml, environment",
+      "from calibration.alignment.pede import read_pede",
+      "from geometry.operations import correct as operation, GeometrySafetyError",
+      "from validation.telescope_closure.closure import displaced_xml, environment",
+      "from calibration.alignment.pede import read_pede",
+      "from geometry.operations import correct as operation, GeometrySafetyError",
+      "import ROOT",
+      "from podio import reading",
+      "from validation.telescope_closure.closure import channel_values, channel_digest",
+      "from calibration.alignment.mille import records, profile",
+      "from calibration.alignment.pede import read_pede",
+      "from geometry.transforms import orientation_distance",
+      "from validation.telescope_closure.closure import displaced_xml, environment",
+      "from geometry.transforms import orientation_distance",
+      "from validation.telescope_closure.closure import displaced_xml, environment",
+      "from calibration.alignment.derivatives import physical_derivatives as operation"
+    ],
+    "validation/telescope_factories/check.py": [
+      "import argparse",
+      "import json",
+      "import math",
+      "from pathlib import Path",
+      "import ROOT",
+      "from podio import reading"
+    ],
+    "validation/telescope_factories/prepare.py": [
+      "import argparse",
+      "from pathlib import Path",
+      "import ROOT",
+      "from podio.frame import Frame",
+      "from podio import root_io"
+    ],
+    "validation/telescope_factories/upstream_diff.py": [
+      "import argparse",
+      "import difflib",
+      "import hashlib",
+      "import json",
+      "from pathlib import Path",
+      "import subprocess"
+    ],
+    "validation/telescope_geometry/check.py": [
+      "import argparse",
+      "import itertools",
+      "import json",
+      "import math",
+      "from pathlib import Path",
+      "import xml.etree.ElementTree as E",
+      "from collections import Counter"
+    ],
+    "validation/test_bias_diagnostics.py": [
+      "import unittest",
+      "import numpy as np",
+      "from validation.telescope_closure.bias import projected_parts"
+    ],
+    "validation/test_calibration_controller.py": [
+      "from contextlib import contextmanager, ExitStack, redirect_stderr",
+      "import importlib.util",
+      "import hashlib",
+      "import io",
+      "import json",
+      "from pathlib import Path",
+      "import tempfile",
+      "import types",
+      "import unittest",
+      "from unittest.mock import patch",
+      "from calibration import controller",
+      "from research_common import REPO, digest",
+      "import numpy"
+    ],
+    "validation/test_calibration_workflow.py": [
+      "import copy",
+      "import json",
+      "from pathlib import Path",
+      "import tempfile",
+      "import unittest",
+      "from unittest.mock import patch",
+      "from calibration import workflow",
+      "from research_common import digest, done",
+      "from validation import test_digitization as digitization_tests",
+      "from calibration.controller import seal",
+      "import ROOT"
+    ],
+    "validation/test_containment.py": [
+      "import unittest",
+      "import numpy as np",
+      "from geometry.transforms import rotation_exp",
+      "from validation.telescope_closure.containment import corners_in_module, ellipsoid_offsets",
+      "from validation.telescope_closure.rotation import injected_vector, labels"
+    ],
+    "validation/test_convergence.py": [
+      "import unittest",
+      "import numpy as np",
+      "from calibration.convergence import evaluate, evaluate_alignment, evaluate_rotation"
+    ],
+    "validation/test_diagnostic.py": [
+      "from contextlib import contextmanager",
+      "import json",
+      "from pathlib import Path",
+      "import unittest",
+      "from calibration import controller",
+      "from calibration.convergence import evaluate_alignment",
+      "from calibration.policy import QualityGateError, require_precision, solver_diagnostics",
+      "from validation.test_calibration_controller import ControllerFixture"
+    ],
+    "validation/test_digitization.py": [
+      "import json",
+      "from pathlib import Path",
+      "import tempfile",
+      "import unittest",
+      "from simulation.digitization import checked_simulation_binding, bit_fields, checked_geometry_contract, decode, geometry_contract, select_channels, write_channels",
+      "from research_common import digest, done",
+      "from research_common import digest, done",
+      "from simulation.geant4 import gun_arguments",
+      "from research_common import digest, done",
+      "from research_common import digest, done",
+      "from research_common import digest, done",
+      "import ROOT",
+      "from podio import reading",
+      "from podio.frame import Frame"
+    ],
+    "validation/test_environment_launcher.py": [
+      "import json",
+      "import os",
+      "from pathlib import Path",
+      "import shutil",
+      "import subprocess",
+      "import tempfile",
+      "import unittest"
+    ],
+    "validation/test_geant4.py": [
+      "import json",
+      "from pathlib import Path",
+      "import tempfile",
+      "import unittest",
+      "import xml.etree.ElementTree as ET",
+      "from calibration.controller import input_provenance",
+      "from simulation.geant4 import gun_arguments, gun_configuration, simulation_geometry"
+    ],
+    "validation/test_geometry_correction.py": [
+      "from pathlib import Path",
+      "import math",
+      "import tempfile",
+      "import unittest",
+      "import xml.etree.ElementTree as ET",
+      "from geometry.operations import LABELS, _xml_identity, displaced_xml"
+    ],
+    "validation/test_geometry_safety.py": [
+      "import copy",
+      "import math",
+      "from pathlib import Path",
+      "import tempfile",
+      "import unittest",
+      "import xml.etree.ElementTree as ET",
+      "import numpy as np",
+      "from geometry.operations import GeometrySafetyError, displaced_xml, validate_geometry",
+      "from geometry.safety import normalize_air_envelopes",
+      "from geometry.transforms import rotation_exp"
+    ],
+    "validation/test_multi_sensor.py": [
+      "import json",
+      "import math",
+      "from pathlib import Path",
+      "import tempfile",
+      "import unittest",
+      "import xml.etree.ElementTree as ET",
+      "import numpy as np",
+      "from geometry.transforms import rotation_exp",
+      "from validation.telescope_closure.closure import displaced_xml, MODULE_TO_GLOBAL",
+      "from validation.telescope_closure.multi_sensor import fixture, is_multi, labels, mapping, pose_increments, xml_identity, normalize_expanded_envelopes",
+      "from validation.telescope_closure.rotation import component_matrix",
+      "import ROOT"
+    ],
+    "validation/test_pede_covariance.py": [
+      "import importlib.util",
+      "import json",
+      "from pathlib import Path",
+      "import tempfile",
+      "import unittest",
+      "from unittest.mock import patch",
+      "import numpy as np",
+      "from calibration.alignment import operations",
+      "from research_common import done"
+    ],
+    "validation/test_rotation_scope.py": [
+      "import math",
+      "import unittest",
+      "import xml.etree.ElementTree as ET",
+      "from validation.telescope_closure.rotation import rotate_component",
+      "import numpy as np",
+      "from validation.telescope_closure.rotation import component_matrix",
+      "from validation.telescope_closure.closure import MODULE_TO_GLOBAL",
+      "from geometry.transforms import rotation_exp, rotation_log",
+      "import numpy as np",
+      "from validation.telescope_closure.rotation import component_matrix",
+      "from validation.telescope_closure.closure import MODULE_TO_GLOBAL",
+      "from geometry.transforms import rotation_exp",
+      "import numpy as np",
+      "from validation.telescope_alignment.check import profile",
+      "import numpy as np",
+      "from validation.telescope_alignment.check import profile",
+      "import numpy as np",
+      "from validation.telescope_closure.rotation import component_matrix",
+      "from validation.telescope_closure.closure import MODULE_TO_GLOBAL",
+      "from geometry.transforms import rotation_exp",
+      "import numpy as np",
+      "from validation.telescope_closure.rotation import component_matrix",
+      "from validation.telescope_closure.closure import MODULE_TO_GLOBAL",
+      "from geometry.transforms import rotation_exp",
+      "import numpy as np",
+      "from geometry.transforms import rotation_exp",
+      "from validation.telescope_closure.closure import MODULE_TO_GLOBAL",
+      "from validation.telescope_closure.rotation import component_matrix",
+      "import numpy as np",
+      "from validation.telescope_alignment.check import profile"
+    ],
+    "validation/test_serialization.py": [
+      "import copy",
+      "import unittest",
+      "import numpy as np",
+      "from calibration import controller"
+    ],
+    "validation/test_single_y.py": [
+      "import copy",
+      "import json",
+      "import math",
+      "from pathlib import Path",
+      "import tempfile",
+      "import unittest",
+      "import xml.etree.ElementTree as ET",
+      "import numpy as np",
+      "from validation.telescope_closure.closure import displaced_xml, MODULE_TO_GLOBAL",
+      "from calibration.alignment.information import analyze",
+      "from validation.telescope_closure.multi_sensor import aligned_sensors, configuration, fixture, labels, pose_increments, references, xml_identity"
+    ],
+    "validation/test_so3.py": [
+      "import math",
+      "import unittest",
+      "from geometry.transforms import IDENTITY, RigidTransform, axis_rotation, multiply, transpose, rotation_exp, rotation_log, orientation_distance, ordered_xy_axes, ordered_xy_increment"
+    ],
+    "validation/test_source_identity.py": [
+      "import hashlib",
+      "import json",
+      "from pathlib import Path",
+      "import subprocess",
+      "import tempfile",
+      "import unittest",
+      "from unittest.mock import patch",
+      "from calibration import controller"
+    ],
+    "validation/test_three_sensor.py": [
+      "import math",
+      "from pathlib import Path",
+      "import tempfile",
+      "import unittest",
+      "import xml.etree.ElementTree as ET",
+      "import numpy as np",
+      "from geometry.transforms import rotation_exp",
+      "from validation.telescope_closure.closure import displaced_xml, MODULE_TO_GLOBAL",
+      "from validation.telescope_closure.multi_sensor import aligned_sensors, configuration, fixture, labels, mapping, pose_increments, references, xml_identity",
+      "from validation.telescope_closure.multi_preflight import _bounds, _pose_bounds, sampled_offsets",
+      "from validation.telescope_closure.rotation import component_matrix",
+      "import copy"
+    ],
+    "validation/test_transforms.py": [
+      "import math",
+      "import unittest",
+      "from geometry.transforms import RigidTransform, axis_rotation"
+    ],
+    "validation/test_y_rotations.py": [
+      "import math",
+      "import tempfile",
+      "import unittest",
+      "from pathlib import Path",
+      "import xml.etree.ElementTree as ET",
+      "import numpy as np",
+      "from geometry.transforms import rotation_exp",
+      "from validation.telescope_closure.closure import displaced_xml, MODULE_TO_GLOBAL",
+      "from validation.telescope_closure.rotation import component_matrix, labels, rotation_labels, fixture_shifts",
+      "import json",
+      "from types import SimpleNamespace",
+      "from validation.telescope_closure.rotation import refine",
+      "from types import SimpleNamespace",
+      "from validation.telescope_closure.rotation import refine",
+      "from research_common import stage, done"
     ]
   },
   "cpp_quoted_includes": [
@@ -395,6 +1217,26 @@
       "resolution": "pinned image package header"
     },
     {
+      "source": "localDetEICrecon/experimental/telescope/tools/TelescopeMilleDerivatives.cc",
+      "include": "alignment/NativeMilleModel.h",
+      "resolution": "localDetEICrecon/experimental/telescope/alignment/NativeMilleModel.h"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/tools/TelescopeNavigationAudit.cc",
+      "include": "NavigationAudit.h",
+      "resolution": "localDetEICrecon/experimental/telescope/NavigationAudit.h"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/tools/TelescopeSerializationAudit.cc",
+      "include": "NavigationAudit.h",
+      "resolution": "localDetEICrecon/experimental/telescope/NavigationAudit.h"
+    },
+    {
+      "source": "localDetEICrecon/experimental/telescope/tools/TelescopeSerializationAudit.cc",
+      "include": "algorithms/tracking/TrackerMeasurementFromHits.h",
+      "resolution": "localDetEICrecon/experimental/telescope/algorithms/tracking/TrackerMeasurementFromHits.h"
+    },
+    {
       "source": "localDetEICrecon/experimental/telescope/upstream_support/algorithms/meta/CollectionCollector.h",
       "include": "services/log/Log_service.h",
       "resolution": "pinned image package header"
@@ -407,40 +1249,20 @@
     {
       "source": "validation/telescope_alignment/LegacyTelescopeCrosscheck.cc",
       "include": "BeamTestMilleWriter.h",
-      "resolution": "localDetEICrecon/alignment/src/BeamTestMilleWriter.h"
-    },
-    {
-      "source": "validation/telescope_alignment/TelescopeMilleDerivatives.cc",
-      "include": "alignment/NativeMilleModel.h",
-      "resolution": "localDetEICrecon/experimental/telescope/alignment/NativeMilleModel.h"
+      "resolution": "pinned image package header"
     },
     {
       "source": "validation/telescope_alignment/TelescopeMilleFixture.cc",
       "include": "alignment/NativeMilleModel.h",
       "resolution": "localDetEICrecon/experimental/telescope/alignment/NativeMilleModel.h"
-    },
-    {
-      "source": "validation/telescope_factories/TelescopeNavigationAudit.cc",
-      "include": "NavigationAudit.h",
-      "resolution": "localDetEICrecon/experimental/telescope/NavigationAudit.h"
-    },
-    {
-      "source": "validation/telescope_factories/TelescopeSerializationAudit.cc",
-      "include": "NavigationAudit.h",
-      "resolution": "localDetEICrecon/experimental/telescope/NavigationAudit.h"
-    },
-    {
-      "source": "validation/telescope_factories/TelescopeSerializationAudit.cc",
-      "include": "algorithms/tracking/TrackerMeasurementFromHits.h",
-      "resolution": "localDetEICrecon/experimental/telescope/algorithms/tracking/TrackerMeasurementFromHits.h"
     }
   ],
-  "cmake_target_sources": [
+  "cmake_targets": [
     {
       "cmake": "localDetEICrecon/experimental/telescope/CMakeLists.txt",
       "target": "TestbenchBarrelMetadata",
-      "source": "../../../validation/telescope_geometry/BarrelMetadata.cc",
-      "resolved": "validation/telescope_geometry/BarrelMetadata.cc",
+      "source": "geometry/BarrelMetadata.cc",
+      "resolved": "localDetEICrecon/experimental/telescope/geometry/BarrelMetadata.cc",
       "exists": true
     },
     {
@@ -488,8 +1310,8 @@
     {
       "cmake": "localDetEICrecon/experimental/telescope/CMakeLists.txt",
       "target": "TelescopeChannels",
-      "source": "../../../validation/telescope_closure/TelescopeChannels.cc",
-      "resolved": "validation/telescope_closure/TelescopeChannels.cc",
+      "source": "tools/TelescopeChannels.cc",
+      "resolved": "localDetEICrecon/experimental/telescope/tools/TelescopeChannels.cc",
       "exists": true
     },
     {
@@ -516,29 +1338,29 @@
     {
       "cmake": "localDetEICrecon/experimental/telescope/CMakeLists.txt",
       "target": "TelescopeMilleDerivatives",
-      "source": "../../../validation/telescope_alignment/TelescopeMilleDerivatives.cc",
-      "resolved": "validation/telescope_alignment/TelescopeMilleDerivatives.cc",
+      "source": "tools/TelescopeMilleDerivatives.cc",
+      "resolved": "localDetEICrecon/experimental/telescope/tools/TelescopeMilleDerivatives.cc",
       "exists": true
     },
     {
       "cmake": "localDetEICrecon/experimental/telescope/CMakeLists.txt",
       "target": "TelescopePhysicalGeometryAudit",
-      "source": "../../../validation/telescope_geometry/TelescopePhysicalGeometryAudit.cc",
-      "resolved": "validation/telescope_geometry/TelescopePhysicalGeometryAudit.cc",
+      "source": "tools/TelescopePhysicalGeometryAudit.cc",
+      "resolved": "localDetEICrecon/experimental/telescope/tools/TelescopePhysicalGeometryAudit.cc",
       "exists": true
     },
     {
       "cmake": "localDetEICrecon/experimental/telescope/CMakeLists.txt",
       "target": "TelescopeNavigationAudit",
-      "source": "../../../validation/telescope_factories/TelescopeNavigationAudit.cc",
-      "resolved": "validation/telescope_factories/TelescopeNavigationAudit.cc",
+      "source": "tools/TelescopeNavigationAudit.cc",
+      "resolved": "localDetEICrecon/experimental/telescope/tools/TelescopeNavigationAudit.cc",
       "exists": true
     },
     {
       "cmake": "localDetEICrecon/experimental/telescope/CMakeLists.txt",
       "target": "TelescopeSerializationAudit",
-      "source": "../../../validation/telescope_factories/TelescopeSerializationAudit.cc",
-      "resolved": "validation/telescope_factories/TelescopeSerializationAudit.cc",
+      "source": "tools/TelescopeSerializationAudit.cc",
+      "resolved": "localDetEICrecon/experimental/telescope/tools/TelescopeSerializationAudit.cc",
       "exists": true
     },
     {
@@ -558,22 +1380,22 @@
     {
       "cmake": "validation/telescope_geometry/CMakeLists.txt",
       "target": "TestbenchBarrelMetadata",
-      "source": "BarrelMetadata.cc",
-      "resolved": "validation/telescope_geometry/BarrelMetadata.cc",
+      "source": "../../localDetEICrecon/experimental/telescope/geometry/BarrelMetadata.cc",
+      "resolved": "localDetEICrecon/experimental/telescope/geometry/BarrelMetadata.cc",
       "exists": true
     },
     {
       "cmake": "validation/telescope_geometry/CMakeLists.txt",
       "target": "TelescopePhysicalGeometryAudit",
-      "source": "TelescopePhysicalGeometryAudit.cc",
-      "resolved": "validation/telescope_geometry/TelescopePhysicalGeometryAudit.cc",
+      "source": "../../localDetEICrecon/experimental/telescope/tools/TelescopePhysicalGeometryAudit.cc",
+      "resolved": "localDetEICrecon/experimental/telescope/tools/TelescopePhysicalGeometryAudit.cc",
       "exists": true
     },
     {
       "cmake": "validation/telescope_one_track/CMakeLists.txt",
       "target": "TestbenchBarrelMetadata",
-      "source": "../telescope_geometry/BarrelMetadata.cc",
-      "resolved": "validation/telescope_geometry/BarrelMetadata.cc",
+      "source": "../../localDetEICrecon/experimental/telescope/geometry/BarrelMetadata.cc",
+      "resolved": "localDetEICrecon/experimental/telescope/geometry/BarrelMetadata.cc",
       "exists": true
     },
     {
@@ -584,146 +1406,27 @@
       "exists": true
     }
   ],
-  "dynamic_controller_configurations": [
-    {
-      "mode": "l1_y_rx_ry_rz_l2_y",
-      "path": "validation/telescope_alignment/l1_y_rx_ry_rz_l2_y.json",
-      "labels": [
-        700102,
-        700104,
-        700105,
-        700106,
-        700202
-      ],
-      "source_identical": true
-    },
-    {
-      "mode": "l1_l2_y_rx_ry_rz",
-      "path": "validation/telescope_alignment/l1_l2_y_rx_ry_rz.json",
-      "labels": [
-        700102,
-        700104,
-        700105,
-        700106,
-        700202,
-        700204,
-        700205,
-        700206
-      ],
-      "source_identical": true
-    },
-    {
-      "mode": "l1_l2_y_rx_ry_rz_l3_y",
-      "path": "validation/telescope_alignment/l1_l2_y_rx_ry_rz_l3_y.json",
-      "labels": [
-        700102,
-        700104,
-        700105,
-        700106,
-        700202,
-        700204,
-        700205,
-        700206,
-        700302
-      ],
-      "source_identical": true
-    },
-    {
-      "mode": "l1_l2_l3_y_rx_ry_rz",
-      "path": "validation/telescope_alignment/l1_l2_l3_y_rx_ry_rz.json",
-      "labels": [
-        700102,
-        700104,
-        700105,
-        700106,
-        700202,
-        700204,
-        700205,
-        700206,
-        700302,
-        700304,
-        700305,
-        700306
-      ],
-      "source_identical": true
-    },
-    {
-      "mode": "l1_y",
-      "path": "validation/telescope_alignment/l1_global_y.json",
-      "labels": [
-        700102
-      ],
-      "source_identical": true
-    }
+  "runtime_configuration": [
+    "calibration/alignment/config/l1_global_rx.json",
+    "calibration/alignment/config/l1_global_rx_ry_rz.json",
+    "calibration/alignment/config/l1_global_ry.json",
+    "calibration/alignment/config/l1_global_ry_rz.json",
+    "calibration/alignment/config/l1_global_rz.json",
+    "calibration/alignment/config/l1_global_y.json",
+    "calibration/alignment/config/l1_global_y_rx_ry_rz.json",
+    "calibration/alignment/config/l1_l2_global_y.json",
+    "calibration/alignment/config/l1_l2_l3_y_rx_ry_rz.json",
+    "calibration/alignment/config/l1_l2_y_rx_ry_rz.json",
+    "calibration/alignment/config/l1_l2_y_rx_ry_rz_l3_y.json",
+    "calibration/alignment/config/l1_y_rx_l2_y.json",
+    "calibration/alignment/config/l1_y_rx_ry_rz_l2_y.json"
   ],
-  "native_closure_configurations": [
-    "l1_global_rx",
-    "l1_global_rx_ry_rz",
-    "l1_global_ry",
-    "l1_global_ry_rz",
-    "l1_global_rz",
-    "l1_global_y",
-    "l1_global_y_rx_ry_rz",
-    "l1_l2_global_y",
-    "l1_l2_l3_y_rx_ry_rz",
-    "l1_l2_y_rx_ry_rz",
-    "l1_l2_y_rx_ry_rz_l3_y",
-    "l1_y_rx_l2_y",
-    "l1_y_rx_ry_rz_l2_y"
-  ],
-  "public_examples": [
-    {
-      "public_config": "calibration/config/native_workflow_example.json",
-      "target": "validation/telescope_alignment/l1_global_y.json",
-      "unique_mode": "l1_y",
-      "identical_to_source": true
-    },
-    {
-      "public_config": "calibration/config/native_workflow_multi.json",
-      "target": "validation/telescope_alignment/l1_y_rx_ry_rz_l2_y.json",
-      "unique_mode": "l1_y_rx_ry_rz_l2_y",
-      "identical_to_source": true
-    },
-    {
-      "public_config": "calibration/config/native_workflow_smoke.json",
-      "target": "validation/telescope_alignment/l1_global_y.json",
-      "unique_mode": "l1_y",
-      "identical_to_source": true
-    }
-  ],
-  "external_sources_lock": "environment/dependencies.json",
-  "geometry_template": "geometry/nominal/seven_layer_telescope.xml",
-  "runtime_subprocesses": [
-    "npsim",
-    "eicrecon",
-    "external/install/bin/pede",
-    "external/install/bin/inspectMilleBinary",
+  "cpp_runtime_tools": [
     "TelescopeChannels",
     "TelescopeMilleDerivatives",
     "TelescopePhysicalGeometryAudit",
-    "python3 -m calibration.native_controller stage"
+    "TelescopeNavigationAudit",
+    "TelescopeSerializationAudit"
   ],
-  "private_data_required_for_smoke": false,
-  "independent_reference": "LegacyTelescopeCrosscheck + BeamTestMilleWriter.cc/.h + TiltMeasurementModel.h; no +Z reconstruction backend",
-  "offline_linearized_diagnostics": {
-    "scope": "Read-only first-linearized diagnostics; not new operational Controller modes",
-    "sources": [
-      "studies/alignment_statistics/fit_18d_linearized_scan.py",
-      "studies/alignment_statistics/analyze_full_42d_information.py",
-      "studies/alignment_statistics/plan_full_dof_scan.py",
-      "studies/alignment_statistics/plot_18d_individual_cohorts.py",
-      "studies/alignment_statistics/plot_all_18d_scan.C"
-    ],
-    "input": "Explicit native ACTS mille.json or derived fit summary; historical datasets remain external",
-    "dependencies": [
-      "NumPy in pinned image",
-      "ROOT/PyROOT in pinned image for plots"
-    ],
-    "runtime_or_geometry_mutation": false,
-    "deferred_original_tools": [
-      "run_real_18d_scan.py",
-      "run_18d_iterations.py",
-      "preflight_full_dof.py"
-    ]
-  }
+  "runtime_imports_validation": false
 }

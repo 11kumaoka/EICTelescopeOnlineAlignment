@@ -8,12 +8,12 @@ options and later stages use the immutable `--run-dir` snapshot.
 
 | Configuration | Generation and intended use |
 | --- | --- |
-| `calibration/config/native_workflow_smoke.json` | 64-event pencil beam, seed 2026102511, L1 Y=+0.080 mm; engineering smoke |
-| `calibration/config/native_workflow_example.json` | 256-event broad beam, seed 2026102512, same single-L1 Y example |
-| `calibration/config/native_workflow_multi.json` | 2304-event broad beam, seed 2026102503; L1 Y/Rx/Ry/Rz and L2 Y; also the basis for the explicitly overridden 12,000-event study |
+| `calibration/config/workflow_smoke.json` | 64-event pencil beam, seed 2026102511, L1 Y=+0.080 mm; engineering smoke |
+| `calibration/config/workflow_example.json` | 256-event broad beam, seed 2026102512, same single-L1 Y example |
+| `calibration/config/workflow_multi.json` | 2304-event broad beam, seed 2026102503; L1 Y/Rx/Ry/Rz and L2 Y; also the basis for the explicitly overridden 12,000-event study |
 
 These public configurations are distinct from internal parameter-map fixtures
-under `validation/telescope_alignment/`. Do not infer
+under `calibration/alignment/config/`. Do not infer
 support for an arbitrary configuration merely because JSON can represent it.
 
 ## Workflow schema
@@ -38,13 +38,13 @@ plus a final fresh evaluation fit. Overrides are recorded; they cannot change
 an existing run's frozen configuration.
 
 The complete reconstruction workflow currently requires `e-` at 1 GeV because
-the existing electron seed prior is fixed. Standalone `simulation.native`
+the existing electron seed prior is fixed. Standalone `simulation.geant4`
 supports a wider explicit gun contract; that is not additional validated
 tracking support.
 
 ## Detector Geometry and beam
 
-Native preparation reads the protected nominal resource
+Geometry preparation reads the protected nominal resource
 `geometry/nominal/seven_layer_telescope.xml`, then generates a separate real
 barrel-compatible XML using installed `DD4hep_SiTrackerBarrel`. There are seven
 physical planes at Global X=250,300,…,550 mm, with five SiMAPS planes followed
@@ -111,18 +111,18 @@ or Truth information. It cannot guarantee later CKF acceptance. Missing tracks,
 outliers, changed track identities or rejected Pede local fits are recorded
 failures, not silently discarded data.
 
-`native_controller start --events N` processes the first N frames in file order
+`calibration.controller start --events N` processes the first N frames in file order
 without truncating the input ROOT file. Full file/payload hashes, producer's
 full accepted count, selected run/event identities and selected payload checksum
 are recorded separately. An example after a successful smoke producer is:
 
 ```bash
-bash environment/run.sh python3 -B -m calibration.native_controller start \
+bash environment/run.sh python3 -B -m calibration.controller start \
   --run result/native_prefix16 \
   --raw result/native_smoke/raw/projection/channels.root \
   --input-provenance result/native_smoke/raw/provenance.json \
   --geometry result/native_smoke/preparation/initial.xml \
-  --config validation/telescope_alignment/l1_global_y.json \
+  --config calibration/alignment/config/l1_global_y.json \
   --build build/native_telescope --events 16 --chi2-cut 1000 \
   --validation-mode diagnostic --geometry-aware-holes \
   --minimum-corrections 1 --maximum-corrections 1
@@ -142,3 +142,19 @@ joint significance `sqrt(delta.T H0 delta)<0.25`. The scaled-condition bound is
 Unchanged track association, physical Geometry and improved chi2/residuals are
 also required. Convergence is same-data consistency, not a statistical coverage
 claim. No candidate is automatically approved or activated.
+
+## Naming and compatibility
+
+Use `simulation.geant4`, `simulation.digitization` and `calibration.controller`
+for independent Python module execution. The public `calibration.workflow`
+subcommands (`prepare`, `simulate`, `digitize`, `calibrate`, `report`, `run`)
+are unchanged. The parameter files are now under
+`calibration/alignment/config/`; their contents and physical meaning are unchanged.
+
+Existing versioned `native-*` JSON schema identifiers, `native_barrel` source
+selector, serialized field names, C++ `NativeMilleModel` API and CMake targets
+are retained deliberately. They identify stored contracts, not optional legacy
+backends. Historical output names and provenance text remain unchanged. No old
+module alias or compatibility wrapper is installed; update imports using the
+migration table. Old checkpoints bind their original sources and are not
+resumable with this refactored source set. Fresh runs use the same safety checks.

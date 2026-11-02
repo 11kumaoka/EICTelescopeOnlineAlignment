@@ -11,9 +11,9 @@ EICrecon checkout or local ROOT installation for batch work.
 unset TESTBENCH_CONTAINER
 bash environment/run.sh python3 -B environment/setup_dependencies.py
 bash environment/run.sh cmake -S /work/localDetEICrecon/experimental/telescope \
-  -B /work/build/native_telescope -DCMAKE_BUILD_TYPE=Release \
+  -B /work/build/telescope -DCMAKE_BUILD_TYPE=Release \
   -DTELESCOPE_BUILD_MILLE_PROBE=ON
-bash environment/run.sh cmake --build /work/build/native_telescope -j2
+bash environment/run.sh cmake --build /work/build/telescope -j2
 ```
 
 The installer fetches the exact Mille/Millepede-II commits in
@@ -32,8 +32,8 @@ source, build, library, input and Geometry identities.
 
 ```bash
 bash environment/run.sh python3 -B -m calibration.workflow run \
-  --config calibration/config/native_workflow_smoke.json \
-  --output-dir result/native_smoke --build build/native_telescope \
+  --config calibration/config/workflow_smoke.json \
+  --output-dir result/calibration_smoke --build build/telescope \
   --validation-mode diagnostic
 ```
 
@@ -46,22 +46,22 @@ Use a new, whitespace-free child of `result/` for every independent run.
 ## Independent stages and input/output
 
 The same operation can be run step by step. Do not run these commands into the
-already completed `native_smoke` directory:
+already completed `calibration_smoke` directory:
 
 ```bash
 bash environment/run.sh python3 -B -m calibration.workflow prepare \
-  --config calibration/config/native_workflow_smoke.json \
-  --output-dir result/native_staged --build build/native_telescope \
+  --config calibration/config/workflow_smoke.json \
+  --output-dir result/calibration_staged --build build/telescope \
   --validation-mode diagnostic
-bash environment/run.sh python3 -B -m calibration.workflow simulate --run-dir result/native_staged
-bash environment/run.sh python3 -B -m calibration.workflow digitize --run-dir result/native_staged
-bash environment/run.sh python3 -B -m calibration.workflow calibrate --run-dir result/native_staged
-bash environment/run.sh python3 -B -m calibration.workflow report --run-dir result/native_staged
+bash environment/run.sh python3 -B -m calibration.workflow simulate --run-dir result/calibration_staged
+bash environment/run.sh python3 -B -m calibration.workflow digitize --run-dir result/calibration_staged
+bash environment/run.sh python3 -B -m calibration.workflow calibrate --run-dir result/calibration_staged
+bash environment/run.sh python3 -B -m calibration.workflow report --run-dir result/calibration_staged
 ```
 
 | Stage | Input | Main output beneath the run directory | Success check |
 | --- | --- | --- | --- |
-| `prepare` | Workflow/alignment JSON, native or explicit XML | `configuration/`; `preparation/{initial.xml,truth.xml}` and real Geometry audits | Sealed preparation, stable detector identities, physical checks |
+| `prepare` | Workflow/alignment JSON, generated barrel or explicit XML | `configuration/`; `preparation/{initial.xml,truth.xml}` and real Geometry audits | Sealed preparation, stable detector identities, physical checks |
 | `simulate` | Truth XML, gun settings and recorded seed | `simulation/transport/events.edm4hep.root` | Simulation inspection and completed producer provenance |
 | `digitize` | Bound Simulation and physical XML | `raw/digitization/digitized.root`; `raw/projection/channels.root`; `raw/provenance.json` | Official digitization, exact Raw-only selection and payload checksums |
 | `calibrate` | Immutable channels/provenance, initial XML and alignment configuration | `controller/jobs/`; checkpoints; `controller/final/candidate.xml` | Full-rank solver, derivatives, physical Geometry, unchanged channels and fresh fits |
@@ -69,12 +69,12 @@ bash environment/run.sh python3 -B -m calibration.workflow report --run-dir resu
 
 Geometry Correction and corrected reconstruction are separate Controller
 operations inside `calibrate`; each writes a fresh sealed stage and reloads
-Geometry in a fresh process. `calibration.native_controller` also exposes
+Geometry in a fresh process. `calibration.controller` also exposes
 `start`, `resume`, `status`, `verify` and explicit `recover-lock` commands:
 
 ```bash
-bash environment/run.sh python3 -B -m calibration.native_controller status --run result/native_smoke/controller
-bash environment/run.sh python3 -B -m calibration.native_controller verify --run result/native_smoke/controller
+bash environment/run.sh python3 -B -m calibration.controller status --run result/calibration_smoke/controller
+bash environment/run.sh python3 -B -m calibration.controller verify --run result/calibration_smoke/controller
 ```
 
 Resume only an intact run with exactly the original implementation, build and
@@ -88,7 +88,7 @@ updates. The JSON reports preserve units, fit status and warnings. On a machine
 or container with a working ROOT GUI/display, open:
 
 ```bash
-root --web=off -l 'visualization/browse.C("result/native_smoke/report/diagnostics.root")'
+root --web=off -l 'visualization/browse.C("result/calibration_smoke/report/diagnostics.root")'
 ```
 
 Batch ROOT creation/readback does not require a GUI. The separate

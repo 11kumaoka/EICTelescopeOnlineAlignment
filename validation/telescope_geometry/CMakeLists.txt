@@ -14,11 +14,11 @@ target_link_libraries(TelescopeGeometryProbe PRIVATE
   nlohmann_json::nlohmann_json DD4hep::DDCore DD4hep::DDRec fmt::fmt spdlog::spdlog)
 
 # Normal DD4hep XML plugin discovery; no installed library is changed.
-add_library(TestbenchBarrelMetadata SHARED BarrelMetadata.cc)
+add_library(TestbenchBarrelMetadata SHARED ../../localDetEICrecon/experimental/telescope/geometry/BarrelMetadata.cc)
 target_link_libraries(TestbenchBarrelMetadata PRIVATE DD4hep::DDCore DD4hep::DDRec)
 dd4hep_generate_rootmap(TestbenchBarrelMetadata)
 
-add_executable(TelescopePhysicalGeometryAudit TelescopePhysicalGeometryAudit.cc)
+add_executable(TelescopePhysicalGeometryAudit ../../localDetEICrecon/experimental/telescope/tools/TelescopePhysicalGeometryAudit.cc)
 add_dependencies(TelescopePhysicalGeometryAudit Components_TestbenchBarrelMetadata)
 target_link_libraries(TelescopePhysicalGeometryAudit PRIVATE
   EICrecon::algorithms_tracking_library Acts::Core Acts::PluginDD4hep

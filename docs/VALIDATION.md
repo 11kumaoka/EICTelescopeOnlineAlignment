@@ -1,5 +1,7 @@
 # Validation
 
+The current structural-refactor validation is recorded separately in [STRUCTURE_VALIDATION.md](STRUCTURE_VALIDATION.md). The dated acceptance records below remain historical evidence.
+
 ## Candidate acceptance record
 
 The initial 142-file curated candidate passed fresh installation, build and

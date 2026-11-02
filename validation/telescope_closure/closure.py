@@ -15,31 +15,31 @@ REPO=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(REPO))
 from research_common import execute,stage,done,require,write_json,digest
 from geometry.transforms import matvec,transpose
-from validation.telescope_geometry.prepare import prepare
-from alignment.pede import read_pede
-from validation.telescope_alignment.check import records,profile
+from geometry.prepare import prepare
+from calibration.alignment.pede import read_pede
+from calibration.alignment.mille import records,profile
 
 LABELS=[700102,700202]
 MODULE_TO_GLOBAL=((0.,0.,1.),(-1.,0.,0.),(0.,-1.,0.))
 
 
 def displaced_xml(nominal,output,shifts,rotations=None,rotation_axis='x',allowed_layers=(1,2)):
-    from calibration.native_operations import displaced_xml as operation
+    from geometry.operations import displaced_xml as operation
     return operation(nominal,output,shifts,rotations,rotation_axis,allowed_layers)
 
 
 def environment(build):
-    from calibration.native_operations import environment as operation
+    from calibration.reconstruction.operations import environment as operation
     return operation(build)
 
 
 def channel_values(path):
-    from calibration.native_operations import channel_values as operation
+    from calibration.reconstruction.operations import channel_values as operation
     return operation(path)
 
 
 def channel_digest(values):
-    from calibration.native_operations import channel_digest as operation
+    from calibration.reconstruction.operations import channel_digest as operation
     return operation(values)
 
 
@@ -114,13 +114,13 @@ def reconstruct(args,name,geometry,input_name,limit=None,cut=None):
     if getattr(args,'mode','l1_l2_y')!='l1_l2_y':
         from validation.telescope_closure.rotation import config_name
         config=config_name(args.mode)
-    from calibration.native_operations import reconstruct as operation
+    from calibration.reconstruction.operations import reconstruct as operation
     return operation(args.build,args.result/name,geometry,args.result/'data'/f'{input_name}.root',
-                     REPO/'validation/telescope_alignment'/f'{config}.json',limit or args.events,cut=cut)
+                     REPO/'calibration/alignment/config'/f'{config}.json',limit or args.events,cut=cut)
 
 
 def solve(args,reconstruction,name):
-    from calibration.native_operations import solve as operation
+    from calibration.alignment.operations import solve as operation
     if getattr(args,'mode','l1_l2_y')!='l1_l2_y' and name in ('solve','postsolve','refinesolve'):
         from validation.telescope_closure.rotation import physical_derivatives
         physical_derivatives(args,reconstruction)
@@ -136,7 +136,7 @@ def correct(args):
     shifts={1:parameters[700102],2:parameters[700202]}
     # Correction reads nominal Geometry and solver output only, never Truth.
     nominal=args.result/'geometry/fixtures/nominal.xml'
-    from calibration.native_operations import correct as operation,GeometrySafetyError
+    from geometry.operations import correct as operation, GeometrySafetyError
     nominal_audit=json.loads((args.result/'data/control/channels_truth.json').read_text())['sensors']
     try:operation(args.build,p/'corrected.xml',nominal,nominal_audit,parameters,'l1_l2_y')
     except GeometrySafetyError as error:raise AssertionError(str(error)) from error

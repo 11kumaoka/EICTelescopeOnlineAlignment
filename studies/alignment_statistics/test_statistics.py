@@ -67,7 +67,7 @@ class StatisticsBookkeepingTests(unittest.TestCase):
             scan.case_directory(Path("/reference"), dict(entry, name="../escape"))
 
     def test_verified_final_rejects_tampering_and_never_claims_coverage(self):
-        from calibration.native_controller import seal
+        from calibration.controller import seal
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             final = root / "final"

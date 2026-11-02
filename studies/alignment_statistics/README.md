@@ -48,7 +48,7 @@ study directory; these commands intentionally stop before full calibration:
 
 ```bash
 bash environment/run.sh python3 -B -m calibration.workflow prepare \
-  --config calibration/config/native_workflow_multi.json --events 12000 \
+  --config calibration/config/workflow_multi.json --events 12000 \
   --build build/native_telescope --output-dir result/statistics_new
 bash environment/run.sh python3 -B -m calibration.workflow simulate --run-dir result/statistics_new
 bash environment/run.sh python3 -B -m calibration.workflow digitize --run-dir result/statistics_new
@@ -58,12 +58,12 @@ This generates new data with recorded settings; it does not promise byte-identic
 historical ROOT containers or selection outcomes. Inspect the actual projected
 count in `raw/provenance.json`, Simulation/Digitization diagnostics and every
 acceptance/failure. Before any research selection, reconstruct the full projected
-sample using `calibration.native_operations.reconstruct`. For example, inside
+sample using `geometry.operations.reconstruct`. For example, inside
 the fixed container, replacing `ACTUAL_PROJECTED_COUNT` with that recorded count:
 
 ```python
 from pathlib import Path
-from calibration.native_operations import reconstruct
+from geometry.operations import reconstruct
 
 study = Path('/work/result/statistics_new')
 reconstruct(Path('/work/build/native_telescope'), study / 'track_prescan',

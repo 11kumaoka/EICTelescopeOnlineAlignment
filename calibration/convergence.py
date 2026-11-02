@@ -22,7 +22,7 @@ def evaluate_rotation(delta_rad,chi2_ratio,tracks,policy):
     return metrics
 
 
-def evaluate_native(labels, delta, initial_normal, initial_sigma, *, iteration,
+def evaluate_alignment(labels, delta, initial_normal, initial_sigma, *, iteration,
                     minimum_corrections=1, maximum_corrections=3, chi2_ratio,
                     residual_norm, initial_chi2_ratio, initial_residual_norm,
                     tracks, rejected, initial_tracks, initial_rejected, rank,

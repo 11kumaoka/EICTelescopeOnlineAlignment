@@ -1,5 +1,7 @@
 # Provenance
 
+For the structural-refactor layout, see [STRUCTURE_MIGRATION.md](STRUCTURE_MIGRATION.md). The 149-file counts and dated tables below describe the original curated handoff; the current source inventory is `retained_files.txt`. Historical provenance is not rewritten.
+
 ## Source chain
 
 This curated candidate derives from local `EICTelescopeOnlineAlignment` initial

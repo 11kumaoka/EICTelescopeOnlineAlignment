@@ -1,4 +1,4 @@
-"""Public orchestration of the existing native telescope calibration stages.
+"""Public orchestration of the telescope calibration stages.
 
 Run inside the fixed Docker environment. Each stage remains independently
 executable; this module adds configuration snapshots and an artifact index,
@@ -34,8 +34,8 @@ def input_path(value):
 
 def validate_configuration(value):
     """Reject unsupported reconstruction contracts before producing any data."""
-    from simulation.native import gun_configuration
-    from calibration.native_controller import selected_mode
+    from simulation.geant4 import gun_configuration
+    from calibration.controller import selected_mode
     value = copy.deepcopy(value)
     allowed = {'schema', 'description', 'geometry', 'simulation', 'alignment', 'controller', 'environment'}
     if not isinstance(value, dict) or set(value) - allowed or value.get('schema') != 'native-workflow-v1':
@@ -75,13 +75,13 @@ def validate_configuration(value):
                          ('position_mm', [249., 0., 0.]), ('direction', [1., 0., 0.])):
         simulation.setdefault(key, default)
     if simulation['particle'] != 'e-' or isinstance(simulation['energy_gev'], bool) or simulation['energy_gev'] != 1.:
-        raise ValueError('The complete native workflow currently requires e- at 1 GeV gun energy because the electron seed prior is fixed. Use simulation.native independently for other particles or energies.')
+        raise ValueError('The complete native workflow currently requires e- at 1 GeV gun energy because the electron seed prior is fixed. Use simulation.geant4 independently for other particles or energies.')
     for key in ('events', 'seed'):
         if type(simulation.get(key)) is not int: raise ValueError('An explicit integer Simulation ' + key + ' is required')
     if simulation['events'] < 5 or not 0 < simulation['seed'] < 2**31:
         raise ValueError('Require at least five events and a positive 31-bit seed')
     gun_configuration(**{key: item for key, item in simulation.items() if key not in ('events', 'seed')})
-    alignment = value['alignment']; alignment.setdefault('config', 'validation/telescope_alignment/l1_global_y.json')
+    alignment = value['alignment']; alignment.setdefault('config', 'calibration/alignment/config/l1_global_y.json')
     alignment['config'] = str(input_path(alignment['config']))
     mode, _ = selected_mode(Path(alignment['config']))
     alignment.setdefault('chi2_cut', 1000.)
@@ -112,8 +112,8 @@ def fresh_output(path):
 
 def checked_reuse(specification, producer):
     """Require the declared gun and the actual completed npsim producer."""
-    from digitization.native import checked_simulation_binding
-    from simulation.native import gun_configuration
+    from simulation.digitization import checked_simulation_binding
+    from simulation.geant4 import gun_configuration
     producer = Path(producer).resolve()
     binding = checked_simulation_binding(producer / 'transport/events.edm4hep.root', producer / 'simulation.xml',
         producer / 'simulation_geometry_audit/geometry.json', producer)
@@ -128,8 +128,8 @@ def checked_reuse(specification, producer):
 
 def initialize(args):
     """Freeze public inputs and prerequisites before starting expensive stages."""
-    from calibration.native_controller import build_identity, source_identity
-    from simulation.native import software_snapshot
+    from calibration.controller import build_identity, source_identity
+    from simulation.geant4 import software_snapshot
     source = args.config.resolve(); value = json.loads(source.read_text())
     overrides = {'geometry': ('source', 'initial'), 'simulation': ('particle', 'energy_gev', 'beam', 'events', 'seed', 'position_mm', 'direction', 'vertex_sigma_mm', 'theta_range_rad', 'phi_range_rad')}
     for section, keys in overrides.items():
@@ -179,7 +179,7 @@ def initialize(args):
 
 
 def load_run(run):
-    from calibration.native_controller import source_identity
+    from calibration.controller import source_identity
     run = Path(run).resolve(); require(run, 'configuration')
     value = json.loads((run / 'configuration/configuration.json').read_text())
     plan = json.loads((run / 'configuration/run_plan.json').read_text())
@@ -195,8 +195,8 @@ def load_run(run):
 
 
 def prepare_stage(run):
-    from calibration.native_operations import displaced_xml, geometry_audit
-    from validation.telescope_geometry.prepare import prepare
+    from geometry.operations import displaced_xml, geometry_audit
+    from geometry.prepare import prepare
     value, _, build = load_run(run); output = run / 'preparation'; output.mkdir()
     specification = value['geometry']
     if specification['source'] == 'native_barrel':
@@ -226,7 +226,7 @@ def simulation_stage(run):
 
 
 def simulate_stage(run):
-    from digitization.native import checked_simulation_binding
+    from simulation.digitization import checked_simulation_binding
     value, plan, build = load_run(run); require(run, 'preparation')
     specification = value['simulation']; reuse = plan['reused_simulation_stage']
     if reuse:
@@ -238,7 +238,7 @@ def simulate_stage(run):
         output = run / 'simulation'; output.mkdir(); write_json(output / 'reference.json', {'producer': str(producer), 'binding': binding})
         done(output, passed=True, reused=True, new_simulation_executed=False)
         return
-    command = [sys.executable, '-B', '-m', 'simulation.native', '--output-dir', run / 'simulation',
+    command = [sys.executable, '-B', '-m', 'simulation.geant4', '--output-dir', run / 'simulation',
                '--geometry', run / 'preparation/truth.xml', '--build', build]
     for key, item in specification.items():
         command.append('--' + key.replace('_', '-')); command.extend(item if isinstance(item, list) else [item])
@@ -247,7 +247,7 @@ def simulate_stage(run):
 
 def digitize_stage(run):
     _, _, build = load_run(run); producer = simulation_stage(run)
-    execute([sys.executable, '-B', '-m', 'digitization.native', '--operation', 'all', '--output-dir', run / 'raw',
+    execute([sys.executable, '-B', '-m', 'simulation.digitization', '--operation', 'all', '--output-dir', run / 'raw',
              '--simulation', producer / 'transport/events.edm4hep.root', '--simulation-stage', producer,
              '--geometry', producer / 'simulation.xml', '--geometry-audit', producer / 'simulation_geometry_audit/geometry.json',
              '--build', build], run / 'execution/digitize', cwd=REPO)
@@ -256,7 +256,7 @@ def digitize_stage(run):
 def calibrate_stage(run):
     value, _, build = load_run(run); require(run, 'raw'); require(run, 'preparation')
     projected = json.loads((run / 'raw/provenance.json').read_text())
-    execute([sys.executable, '-B', '-m', 'calibration.native_controller', 'start', '--run', run / 'controller',
+    execute([sys.executable, '-B', '-m', 'calibration.controller', 'start', '--run', run / 'controller',
              '--raw', run / 'raw/projection/channels.root', '--input-provenance', run / 'raw/provenance.json',
              '--geometry', run / 'preparation/initial.xml', '--config', run / 'configuration/alignment.json', '--build', build,
              '--events', projected['accepted_events'], '--chi2-cut', value['alignment']['chi2_cut'],
@@ -267,7 +267,7 @@ def calibrate_stage(run):
 def root_report(run, output):
     """Plot actual fitted states and Pede updates; never use injected corrections."""
     import ROOT
-    from calibration.native_controller import verify
+    from calibration.controller import verify
     ROOT.gROOT.SetBatch(True)
     target = output / 'diagnostics.root'; file = ROOT.TFile(str(target), 'CREATE')
     if file.IsZombie(): raise RuntimeError('Cannot create fresh diagnostic ROOT output')
@@ -367,7 +367,7 @@ def root_report(run, output):
 
 
 def report_stage(run):
-    from calibration.native_controller import check_identity, checkpoints, verify
+    from calibration.controller import check_identity, checkpoints, verify
     require(run, 'configuration'); output = run / 'report'; output.mkdir()
     controller = run / 'controller'; final = controller / 'final/report.json'
     reports = sorted(controller.glob('jobs/attempt_*/report.json'))

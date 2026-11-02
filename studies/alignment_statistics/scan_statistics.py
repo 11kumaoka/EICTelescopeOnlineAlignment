@@ -97,7 +97,7 @@ def case_directory(study, entry):
 
 def verified_final(path):
     """Read a sealed one-correction result without asserting physics validation."""
-    from calibration.native_controller import verify
+    from calibration.controller import verify
     verify(path / "final")
     value = read(path / "final/report.json")
     if not (value.get("engineering_success") is True and
@@ -156,8 +156,8 @@ def select(study, ledger_path, source=None, output=None):
     read Simulation Truth or modify the source ROOT file.
     """
     from podio import reading
-    from digitization.native import write_channels
-    from calibration.native_operations import channel_values, channel_digest
+    from simulation.digitization import write_channels
+    from calibration.reconstruction.operations import channel_values, channel_digest
     source = study / "raw/projection/channels.root" if source is None else source
     output = study / "raw/track_accepted" if output is None else output
     if output.exists():
@@ -221,8 +221,8 @@ def select(study, ledger_path, source=None, output=None):
 
 def prepare(study, fresh_calibrations=False):
     from podio import reading
-    from digitization.native import write_channels
-    from calibration.native_operations import channel_values, channel_digest
+    from simulation.digitization import write_channels
+    from calibration.reconstruction.operations import channel_values, channel_digest
     master, provenance, root = paths(study)
     if root.exists():
         raise FileExistsError(f"Study already prepared: {root}; never overwrite. Use 'run'.")
@@ -354,7 +354,7 @@ def run(study, max_jobs):
         if max_jobs is not None and completed >= max_jobs:
             print(f"PAUSED after {completed} new jobs; invoke run again to continue")
             return
-        command = [sys.executable, "-B", "-m", "calibration.native_controller", "start",
+        command = [sys.executable, "-B", "-m", "calibration.controller", "start",
                    "--run", str(destination),
                    "--raw", entry["input_root"], "--input-provenance", entry["input_provenance"],
                    "--geometry", str((study / "preparation/initial.xml").resolve()),

@@ -20,7 +20,7 @@ from research_common import REPO, digest, done, execute, stage, write_json
 from validation.telescope_closure.closure import (
     MODULE_TO_GLOBAL, displaced_xml, environment)
 from validation.telescope_closure.containment import corners_in_module
-from validation.telescope_closure.multi_information import analyze
+from calibration.alignment.information import analyze
 from validation.telescope_closure.multi_sensor import (
     aligned_sensors, fixture, injection, labels, mapping, pose_increments, xml_identity)
 from validation.telescope_closure.rotation import pose_checks

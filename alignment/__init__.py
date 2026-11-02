@@ -1,1 +1,0 @@
-"""Independent alignment research task."""
