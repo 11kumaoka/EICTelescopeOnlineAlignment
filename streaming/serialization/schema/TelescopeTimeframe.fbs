@@ -1,0 +1,51 @@
+namespace eic.telescope.streaming.fb;
+
+// Integer widths match the generated EDM4eic RawTrackerHit data exactly.
+struct RawTrackerHitEntry {
+  cell_id: ulong;
+  charge: int;
+  time_stamp: int;
+}
+
+// EventHeader has one variable-length member, so it remains a table.
+table EventHeaderEntry {
+  event_number: ulong;
+  run_number: uint;
+  time_stamp: ulong;
+  // Store IEEE-754 bits because FlatBuffers elides a scalar -0.0 when its
+  // default is +0.0. This preserves every EventHeader weight bit exactly.
+  weight_bits: ulong;
+  weights: [double];
+}
+
+table EventHeaderPayload {
+  entries: [EventHeaderEntry] (required);
+}
+
+table RawTrackerHitPayload {
+  entries: [RawTrackerHitEntry] (required);
+}
+
+// Add future EDM collection payloads here without changing the envelope.
+union CollectionPayload {
+  EventHeaderPayload,
+  RawTrackerHitPayload
+}
+
+table Collection {
+  name: string (required);
+  edm_type: string (required);
+  podio_schema_version: uint;
+  payload: CollectionPayload;
+}
+
+// One PODIO ROOT event is one logical timeframe in wire format version 1.
+table Timeframe {
+  wire_schema_version: uint = 1;
+  category: string (required);
+  source_entry: ulong;
+  collections: [Collection] (required);
+}
+
+root_type Timeframe;
+file_identifier "ETFB";

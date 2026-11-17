@@ -39,6 +39,11 @@ displacement of +0.080 mm. No private dataset is needed. The output directory
 must not exist. Read `result/calibration_smoke/report/summary.json`,
 `report/report.md`, `report/diagnostics.root` and `run_manifest.json`.
 
+Dependency setup uses the pinned official sources and one Fortran compiler for
+Mille/Pede. CMake and runtime share `MILLEPEDE_PREFIX`; a fresh clone defaults to
+`external/install`. See [dependency selection](docs/QUICKSTART.md#environment-and-build)
+for replacing an installation without overwriting existing dependencies.
+
 Technical completion, convergence and physics quality are separate report
 fields. The example intentionally uses offline `diagnostic` policy: recognized
 high-chi2 Pede advisories remain visible and suggested error scaling is never
@@ -56,6 +61,8 @@ Candidates remain unapproved and are never activated automatically.
 | [Provenance](docs/PROVENANCE.md) | Curated source origin and retained/excluded inventories |
 | [Statistics study](studies/alignment_statistics/README.md) | Reproduce the 12,000-event/28-cohort methodology with new data |
 | [Linearized diagnostics](docs/LINEARIZED_DIAGNOSTICS.md) | Offline 18-parameter estimates, 42-parameter information rank and ROOT plots; no operational alignment-mode extension |
+| [Streaming serialization](streaming/serialization/README.md) | JANA/ZeroMQ-independent PODIO RawHit FlatBuffers schema, exact round trip and benchmark |
+| [Streaming ZeroMQ transport](streaming/zeromq/README.md) | Multi-event ROOT sender, acknowledged ZeroMQ transport, and JANA event source |
 
 Simulation and Digitization live under `simulation/`. Calibration coordinates
 Reconstruction (`calibration/reconstruction/`), Alignment (`calibration/alignment/`)

@@ -28,10 +28,82 @@ target_link_libraries(TelescopeTracking PRIVATE EICrecon::algorithms_tracking_li
   JANA::jana2_shared_lib DD4hep::DDCore DD4hep::DDRec Acts::Core Acts::PluginDD4hep
   ${ACTS_EXAMPLES_FRAMEWORK} EDM4EIC::edm4eic algorithms::core nlohmann_json::nlohmann_json spdlog::spdlog)
 
+option(TELESCOPE_BUILD_STREAMING_SERIALIZATION
+  "Build the JANA/ZeroMQ-independent PODIO FlatBuffers prototype" OFF)
+if(TELESCOPE_BUILD_STREAMING_SERIALIZATION)
+  include(CTest)
+  add_subdirectory(
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../streaming/serialization
+    ${CMAKE_CURRENT_BINARY_DIR}/streaming_serialization)
+endif()
+
+option(TELESCOPE_BUILD_ZMQ_TRANSPORT
+  "Build the standalone ZeroMQ FlatBuffers sender and receiver" OFF)
+if(TELESCOPE_BUILD_ZMQ_TRANSPORT)
+  if(NOT TELESCOPE_BUILD_STREAMING_SERIALIZATION)
+    message(FATAL_ERROR
+      "TELESCOPE_BUILD_ZMQ_TRANSPORT requires TELESCOPE_BUILD_STREAMING_SERIALIZATION")
+  endif()
+  add_subdirectory(
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../streaming/zeromq
+    ${CMAKE_CURRENT_BINARY_DIR}/streaming_zeromq)
+endif()
+
+option(TELESCOPE_BUILD_ZMQ_EVENT_SOURCE
+  "Build the EICrecon/JANA ZeroMQ PODIO event source" OFF)
+if(TELESCOPE_BUILD_ZMQ_EVENT_SOURCE)
+  if(NOT TELESCOPE_BUILD_STREAMING_SERIALIZATION OR
+     NOT TELESCOPE_BUILD_ZMQ_TRANSPORT)
+    message(FATAL_ERROR
+      "TELESCOPE_BUILD_ZMQ_EVENT_SOURCE requires serialization and ZeroMQ transport")
+  endif()
+  find_package(Threads REQUIRED)
+  add_library(TelescopeZmqEventSourceCore STATIC
+    streaming/TelescopeZmqEventSource.cc)
+  set_target_properties(TelescopeZmqEventSourceCore PROPERTIES
+    POSITION_INDEPENDENT_CODE ON)
+  target_include_directories(TelescopeZmqEventSourceCore PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/streaming)
+  target_link_libraries(TelescopeZmqEventSourceCore PUBLIC
+    JANA::jana2_shared_lib
+    Threads::Threads
+    TelescopeZmqTransport
+    TelescopeTimeframeSerialization)
+
+  add_library(TelescopeStreaming SHARED
+    streaming/TelescopeStreaming.cc)
+  set_target_properties(TelescopeStreaming PROPERTIES PREFIX "")
+  target_link_libraries(TelescopeStreaming PRIVATE
+    TelescopeZmqEventSourceCore)
+
+  add_executable(TelescopeZmqEventSourceTest
+    tools/TelescopeZmqEventSourceTest.cc)
+  target_link_libraries(TelescopeZmqEventSourceTest PRIVATE
+    TelescopeZmqEventSourceCore)
+  if(BUILD_TESTING)
+    add_test(NAME TelescopeZmqEventSourceTest
+      COMMAND TelescopeZmqEventSourceTest 1)
+    add_test(NAME TelescopeZmqEventSourceMultithreadTest
+      COMMAND TelescopeZmqEventSourceTest 4)
+  endif()
+endif()
+
 # Opt-in alignment mathematics validation; reconstruction targets are unchanged.
 option(TELESCOPE_BUILD_MILLE_PROBE "Build the isolated native-state Mille prototype" OFF)
 if(TELESCOPE_BUILD_MILLE_PROBE)
-  set(Mille_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../external/install/cmake" CACHE PATH "Formal Mille installation" FORCE)
+  # Use exactly the same prefix selection as the Python runtime and provenance.
+  find_package(Python3 REQUIRED COMPONENTS Interpreter)
+  execute_process(
+    COMMAND "${Python3_EXECUTABLE}" -B -c "from research_common import prefix; print(prefix())"
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../../.."
+    OUTPUT_VARIABLE _mille_prefix OUTPUT_STRIP_TRAILING_WHITESPACE
+    RESULT_VARIABLE _mille_status ERROR_VARIABLE _mille_error)
+  if(NOT _mille_status EQUAL 0)
+    message(FATAL_ERROR "Cannot select Mille/Pede installation: ${_mille_error}")
+  endif()
+  message(STATUS "Alignment Mille/Pede prefix: ${_mille_prefix}")
+  set(Mille_DIR "${_mille_prefix}/cmake" CACHE PATH "Shared Mille/Pede installation (MILLEPEDE_PREFIX)" FORCE)
   find_package(Mille CONFIG REQUIRED NO_DEFAULT_PATH PATHS "${Mille_DIR}")
   add_library(NativeMilleModel STATIC alignment/NativeMilleModel.cc)
   set_target_properties(NativeMilleModel PROPERTIES POSITION_INDEPENDENT_CODE ON)
@@ -39,7 +111,7 @@ if(TELESCOPE_BUILD_MILLE_PROBE)
   file(SHA256 "${CMAKE_CURRENT_SOURCE_DIR}/alignment/NativeMilleModel.cc" _model_cc_sha)
   file(SHA256 "${CMAKE_CURRENT_SOURCE_DIR}/alignment/NativeMilleModel.h" _model_h_sha)
   string(SHA256 _model_sha "${_model_cc_sha}${_model_h_sha}")
-  target_compile_definitions(NativeMilleModel PUBLIC TELESCOPE_MILLE_MODEL_SHA="${_model_sha}")
+  target_compile_definitions(NativeMilleModel PUBLIC Acts_VERSION_MAJOR=${Acts_VERSION_MAJOR} Acts_VERSION_MINOR=${Acts_VERSION_MINOR} TELESCOPE_MILLE_MODEL_SHA="${_model_sha}")
   target_include_directories(NativeMilleModel PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${EICRECON_INCLUDE_DIR})
   target_link_libraries(NativeMilleModel PUBLIC EICrecon::algorithms_tracking_library Acts::Core
     ${ACTS_EXAMPLES_FRAMEWORK} DD4hep::DDCore DD4hep::DDRec EDM4EIC::edm4eic)
@@ -66,7 +138,13 @@ if(TELESCOPE_BUILD_MILLE_PROBE)
   target_include_directories(TelescopeNavigationAudit PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${EICRECON_INCLUDE_DIR})
   target_link_libraries(TelescopeNavigationAudit PRIVATE EICrecon::algorithms_tracking_library Acts::Core Acts::PluginDD4hep
     DD4hep::DDCore DD4hep::DDRec EDM4EIC::edm4eic algorithms::core nlohmann_json::nlohmann_json spdlog::spdlog)
+  # EICrecon public headers select GeometryContext initialization by ACTS version.
+  # These standalone tools do not inherit NativeMilleModel usage requirements.
+  foreach(_target TelescopePhysicalGeometryAudit TelescopeNavigationAudit)
+    target_compile_definitions(${_target} PRIVATE Acts_VERSION_MAJOR=${Acts_VERSION_MAJOR} Acts_VERSION_MINOR=${Acts_VERSION_MINOR})
+  endforeach()
   add_executable(TelescopeSerializationAudit tools/TelescopeSerializationAudit.cc algorithms/tracking/TrackerMeasurementFromHits.cc)
+  target_compile_definitions(TelescopeSerializationAudit PRIVATE Acts_VERSION_MAJOR=${Acts_VERSION_MAJOR} Acts_VERSION_MINOR=${Acts_VERSION_MINOR})
   add_dependencies(TelescopeSerializationAudit Components_TestbenchBarrelMetadata)
   target_include_directories(TelescopeSerializationAudit PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${EICRECON_INCLUDE_DIR})
   target_link_libraries(TelescopeSerializationAudit PRIVATE EICrecon::algorithms_tracking_library Acts::Core Acts::PluginDD4hep
