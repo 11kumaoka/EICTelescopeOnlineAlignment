@@ -26,8 +26,11 @@ If an ACK times out, the sender uses `ZMQ_REQ_RELAXED` plus
 sequence, header, and payload byte-for-byte, re-ACKs an exact retry, and never
 delivers it upstream twice. A retry with different content is a fatal protocol
 error.
-The ACK means the receiver transport owns the complete message; it does not
-mean FlatBuffers deserialization or downstream JANA factories have completed.
+By default, the ACK means the receiver transport owns the complete message; it
+does not mean FlatBuffers deserialization or downstream JANA factories have
+completed. A protocol-v3 application may instead select deferred ACK and call
+`acknowledgeLast()` after application validation or durable storage. The Mille
+Collector uses this mode; the JEventSource retains the default transport ACK.
 
 The receiver also accepts legacy protocol version 1 streams containing exactly
 `DATA(0), EOS(1)`. The old single-file sender syntax continues to emit this v1
@@ -44,7 +47,7 @@ collection types, and PODIO schema versions before publishing decoded data.
 | 0–3 | magic | ASCII `ETZ1` |
 | 4–5 | protocol version | unsigned 16-bit, network order; versions 1, 2, or 3 |
 | 6 | message kind | `DATA=1`, `EOS=2`, `ACK=3` |
-| 7 | payload encoding | `NONE=0`, `ETFB=1` |
+| 7 | payload encoding | `NONE=0`, Telescope timeframe `ETFB=1`, Mille record `EMIL=2` |
 | 8–15 | stream ID | unsigned 64-bit, network order |
 | 16–23 | sequence | unsigned 64-bit, network order |
 | 24–31 | payload size | unsigned 64-bit, network order |
@@ -65,8 +68,9 @@ library retry budget.
 
 `TelescopeZmqTransport` deliberately treats payload bytes as opaque. The CLI
 sender verifies ETFB before transport, and the CLI receiver verifies and
-deserializes ETFB before publishing output. Future direct library callers must
-perform the same serialization-layer validation.
+deserializes ETFB before publishing output. The separate Mille layer verifies
+EMIL before its deferred durable ACK. Future direct library callers must
+perform the corresponding serialization-layer validation.
 
 ## Build
 

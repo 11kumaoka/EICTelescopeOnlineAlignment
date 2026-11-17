@@ -1,0 +1,26 @@
+namespace eic.telescope.streaming.mille.fb;
+
+enum StoragePrecision : ubyte {
+  Float32 = 0,
+  Float64 = 1
+}
+
+// One table is one complete track after the official MilleRecord addData
+// encoder. The positional vectors include the leading (0,0) record marker.
+table TrackRecord {
+  wire_schema_version: uint = 1;
+  stream_id: ulong;
+  sequence: ulong;
+  run_number: ulong;
+  event_number: ulong;
+  model_id: string (required);
+  configuration_id: string (required);
+  geometry_id: string (required);
+  precision: StoragePrecision = Float64;
+  scalar_measurements: uint;
+  integer_buffer: [int] (required);
+  value_buffer: [double] (required);
+}
+
+root_type TrackRecord;
+file_identifier "EMIL";

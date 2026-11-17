@@ -77,7 +77,7 @@ def source_identity():
     for name in sorted(set(names)):
         path = REPO / name
         if not path.is_file() or name.startswith(('result/', 'results/', 'build/', 'external/')): continue
-        if path.suffix in ('.py', '.cc', '.cpp', '.h', '.hpp', '.json', '.sh', '.cmake') or path.name == 'CMakeLists.txt':
+        if path.suffix in ('.py', '.cc', '.cpp', '.h', '.hpp', '.json', '.fbs', '.sh', '.cmake') or path.name == 'CMakeLists.txt':
             selected[str(path)] = digest(path)
     if not selected: raise RuntimeError('No maintained implementation sources found')
     return selected
@@ -112,11 +112,15 @@ def repository_identity():
     return {'head': head, 'git_head_state': state, 'source_tree_sha256': fingerprint}
 
 
-def build_identity(build):
+def build_identity(build, mille_transport='file'):
     """Record the actual ELF dependencies selected by the production environment."""
     from calibration.reconstruction.operations import environment
+    if mille_transport not in ('file', 'zeromq'):
+        raise ValueError('Unsupported Mille transport: ' + str(mille_transport))
     binaries = ['TelescopeTracking.so', 'TelescopeMille.so', 'libTestbenchBarrelMetadata.so',
                 'TelescopeChannels', 'TelescopeMilleDerivatives', 'TelescopePhysicalGeometryAudit']
+    if mille_transport == 'zeromq':
+        binaries.append('TelescopeMilleCollector')
     required = binaries + ['CMakeCache.txt']
     files = {str(build / name): digest(build / name) for name in required}
     dependencies = prefix()
@@ -205,7 +209,8 @@ def worker(request_path):
         reconstruction_operations.reconstruct(build, output, Path(request['geometry']), Path(request['raw']),
                                Path(request['config']), request['events'], request['chi2_cut'],
                                input_origin=request.get('input_origin', 'synthetic'),
-                               geometry_aware_holes=request.get('geometry_aware_holes', False))
+                               geometry_aware_holes=request.get('geometry_aware_holes', False),
+                               mille_transport=request.get('mille_transport', 'file'))
     elif action == 'derivatives':
         derivatives.physical_derivatives(build, output, Path(request['reconstruction']),
             Path(request['geometry']), request['sensors'], request['mode'])
@@ -450,7 +455,11 @@ def initialize(args):
         shutil.copyfile(provenance, target); snapshots['provenance'] = identity(target)
         if snapshots['provenance']['sha256'] != original['provenance']['sha256']:
             raise RuntimeError('Input provenance changed while snapshotting')
+    mille_transport = getattr(args, 'mille_transport', 'file')
+    if mille_transport not in ('file', 'zeromq'):
+        raise ValueError('Unsupported Mille transport: ' + str(mille_transport))
     manifest = {'schema': 'native-calibration-v1', 'mode': mode, 'events': args.events,
+        'mille_transport': mille_transport,
         'chi2_cut': args.chi2_cut, 'minimum_corrections': args.minimum_corrections,
         'maximum_corrections': args.maximum_corrections,
         'policy': {'policy_label': 'demonstration same-data consistency; no accuracy/coverage certification',
@@ -460,7 +469,8 @@ def initialize(args):
         'channel_payload_sha256': payload_sha256, 'input_selection': selection,
         'parameters': configuration['parameters'],
         'fixed_reference_sensors': references(mode),
-        'build_dir': str(args.build.resolve()), 'build': build_identity(args.build.resolve()),
+        'build_dir': str(args.build.resolve()),
+        'build': build_identity(args.build.resolve(), mille_transport=mille_transport),
         'sources': source_identity(), 'geometry_activated': False,
         'iteration_convention': 'At most maximum_corrections applied updates; one extra fresh fit certifies the last candidate. Initial covariance is retained, never summed across fits.'}
     if provenance is not None:
@@ -571,6 +581,7 @@ def calibrate(run):
                 reconstruction = run_stage(directory, 'reconstruct', manifest, lock_fd,
                     geometry=str(current), raw=manifest['input']['raw']['path'], config=manifest['input']['config']['path'],
                     events=manifest['events'], chi2_cut=manifest['chi2_cut'],
+                    mille_transport=manifest.get('mille_transport', 'file'),
                     **({'input_origin': manifest['input_origin']} if 'input_origin' in manifest else {}),
                     **({'geometry_aware_holes': True} if manifest.get('geometry_aware_holes') else {}))
                 run_stage(directory, 'derivatives', manifest, lock_fd, reconstruction=str(reconstruction),
@@ -650,6 +661,8 @@ def main():
     start.add_argument('--build', type=Path, required=True)
     start.add_argument('--events', type=int, required=True)
     start.add_argument('--chi2-cut', type=float, required=True)
+    start.add_argument('--mille-transport', choices=('file', 'zeromq'), default='file',
+                       help='Write Mille records directly or through the iteration-local ZeroMQ collector')
     start.add_argument('--validation-mode', choices=('strict', 'diagnostic'), default='strict',
                        help='Strict gates by default; offline diagnostic mode retains recognized high-chi2 warnings and never approves Geometry')
     start.add_argument('--geometry-aware-holes', action='store_true',

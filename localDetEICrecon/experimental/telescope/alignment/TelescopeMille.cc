@@ -1,5 +1,9 @@
 // Opt-in native ACTS-to-Mille validation processor. No Geometry correction/activation.
 #include "NativeMilleModel.h"
+#include "MilleRecordOutput.h"
+#ifdef TELESCOPE_MILLE_ZMQ
+#include "MilleZmqRecordOutput.h"
+#endif
 #include <JANA/JApplication.h>
 #include <JANA/JEventProcessor.h>
 #include <services/geometry/acts/ACTSGeo_service.h>
@@ -7,7 +11,6 @@
 #include <ActsExamples/EventData/IndexSourceLink.hpp>
 #include <ActsExamples/EventData/Track.hpp>
 #include <edm4eic/Measurement2DCollection.h>
-#include <Mille/MilleFactory.h>
 #include <Mille/MilleRecord.h>
 #include <nlohmann/json.hpp>
 #include <filesystem>
@@ -35,25 +38,60 @@ void save(const std::string& name,const nlohmann::json& report) {
   while(offset<data.size()) {const auto n=::write(fd,data.data()+offset,data.size()-offset);if(n<=0){::close(fd);throw std::runtime_error("Mille report write failed");}offset+=n;}
   ::close(fd);
 }
+bool sha256(const std::string& value) {
+  return value.size()==64 && std::all_of(value.begin(),value.end(),[](unsigned char c) {
+    return (c>='0'&&c<='9')||(c>='a'&&c<='f');
+  });
+}
 }
 class TelescopeMilleProcessor : public JEventProcessor {
-  std::string output,reportPath,configPath,gatePath;
+  std::string output,reportPath,configPath,gatePath,outputMode="file",endpoint;
+  std::string configurationId,geometryId;
+  uint64_t streamId=0;
+  int timeoutMs=30000,acknowledgementRetries=3;
   nlohmann::json config,gate;
   bool multipleEvents=false;
-  std::unique_ptr<Mille::MilleRecord> record;
+  std::unique_ptr<MilleRecordOutput> recordOutput;
   nlohmann::json events=nlohmann::json::array();
   std::size_t processed=0,rejected=0;
   std::mutex mutex;
+  void ensureRecordOutput() {
+    if(recordOutput)return;
+    if(outputMode=="file") {
+      reserve(output);recordOutput=makeFileMilleRecordOutput(output);return;
+    }
+#ifdef TELESCOPE_MILLE_ZMQ
+    recordOutput=makeZmqMilleRecordOutput({endpoint,streamId,TELESCOPE_MILLE_MODEL_SHA,
+      configurationId,geometryId,timeoutMs,acknowledgementRetries});
+#else
+    throw std::runtime_error("TelescopeMille was built without ZeroMQ output support");
+#endif
+  }
 public:
   void Init() override {
     auto* app=GetApplication();
     app->SetDefaultParameter("TelescopeMille:multipleEvents",multipleEvents,"Write one native Mille record per accepted event and aggregate diagnostics");
     app->SetDefaultParameter("TelescopeMille:output",output,"New official Mille Binary; experimental single-track probe");
+    app->SetDefaultParameter("TelescopeMille:outputMode",outputMode,"Mille output backend: file or zeromq");
+    app->SetDefaultParameter("TelescopeMille:endpoint",endpoint,"ZeroMQ collector endpoint for outputMode=zeromq");
+    app->SetDefaultParameter("TelescopeMille:streamId",streamId,"Nonzero per-iteration ZeroMQ stream identity");
+    app->SetDefaultParameter("TelescopeMille:configurationId",configurationId,"SHA-256 of the alignment configuration");
+    app->SetDefaultParameter("TelescopeMille:geometryId",geometryId,"SHA-256 of the active compact Geometry");
+    app->SetDefaultParameter("TelescopeMille:timeoutMs",timeoutMs,"ZeroMQ send/ACK timeout in milliseconds");
+    app->SetDefaultParameter("TelescopeMille:acknowledgementRetries",acknowledgementRetries,"Bounded protocol-v3 ACK retries");
     app->SetDefaultParameter("TelescopeMille:report",reportPath,"New native equation JSON audit");
     app->SetDefaultParameter("TelescopeMille:config",configPath,"Explicit SiMAPS sensor identities and selected physical Global Y/rotation label map JSON");
     app->SetDefaultParameter("TelescopeMille:derivativeGate",gatePath,"Successful derivative gate JSON from this build/fixture");
-    for(const auto& path:{output,reportPath}) if(path.empty() || std::filesystem::exists(path))
-      throw std::runtime_error("Mille probe requires new explicit output paths");
+    if(reportPath.empty() || std::filesystem::exists(reportPath))
+      throw std::runtime_error("Mille probe requires a new explicit report path");
+    if(outputMode=="file") {
+      if(output.empty() || std::filesystem::exists(output))
+        throw std::runtime_error("File Mille output must be a new explicit path");
+    } else if(outputMode=="zeromq") {
+      if(endpoint.empty() || streamId==0 || !sha256(configurationId) || !sha256(geometryId) ||
+         timeoutMs<=0 || acknowledgementRetries<0)
+        throw std::runtime_error("Invalid ZeroMQ Mille endpoint, identity, timeout, or retry configuration");
+    } else throw std::runtime_error("TelescopeMille:outputMode must be file or zeromq");
     config=nlohmann::json::parse(std::ifstream(configPath));gate=nlohmann::json::parse(std::ifstream(gatePath));
     if(!gate.at("passed").get<bool>() || gate.at("model_sha256")!=TELESCOPE_MILLE_MODEL_SHA)throw std::runtime_error("Derivative gate failed");
     if(config.at("scope")!="experimental_zero_field_material_free")
@@ -131,6 +169,9 @@ public:
       if(declared.empty() || declared.size()!=components.size() || declared!=selectedComponents[layer])
         throw std::runtime_error("Selected sensor components differ from parameter declarations");
     }
+    // Establish the dedicated I/O thread before event processing. File output
+    // remains lazy so the historical new-file behavior is unchanged.
+    if(outputMode=="zeromq")ensureRecordOutput();
   }
   void Process(const std::shared_ptr<const JEvent>& event) override {
     std::lock_guard<std::mutex> guard(mutex);++processed;
@@ -233,18 +274,22 @@ public:
         {"center_mm",{center.x(),center.y(),center.z()}},{"rotation",matrix(surface->localToGlobalTransform(context).linear())}});
     }
     if(rows.size()!=10 || layers.size()!=5)throw std::runtime_error("Incomplete native Mille equations");
-    if(!record) {reserve(output);record=Mille::spawnMilleRecord(output,true,false);}
-    if(!record)throw std::runtime_error("Cannot create official Mille record");
+    ensureRecordOutput();
+    if(event->GetRunNumber()<0)throw std::runtime_error("Negative run number cannot be streamed");
+    auto& record=recordOutput->beginRecord({
+      static_cast<std::uint64_t>(event->GetRunNumber()),
+      static_cast<std::uint64_t>(event->GetEventNumber())});
     const std::vector<unsigned int> localIndices{1,2,3,4};
-    for(const auto& row:rows)record->addData(row.value,1.,localIndices,row.local,row.labels,row.global);
-    record->writeRecord();record->flushOutputFile();if(!multipleEvents)record.reset();
+    for(const auto& row:rows)record.addData(row.value,1.,localIndices,row.local,row.labels,row.global);
+    recordOutput->commitRecord(static_cast<std::uint32_t>(rows.size()));
+    if(!multipleEvents){recordOutput->finish();recordOutput.reset();}
     report["records"]=1;report["scalar_measurements"]=rows.size();report["double_precision"]=true;
     report["passed"]=true;
     if(multipleEvents)events.push_back(report);else save(reportPath,report);
   }
   void Finish() override {
+    if(recordOutput){recordOutput->finish();recordOutput.reset();}
     if(!multipleEvents)return;
-    record.reset();
     save(reportPath,{{"passed",rejected==0},{"processed",processed},{"accepted",processed-rejected},
       {"rejected",rejected},{"records",processed-rejected},{"events",events},
       {"model_sha256",TELESCOPE_MILLE_MODEL_SHA}});

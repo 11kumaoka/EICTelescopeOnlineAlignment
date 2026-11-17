@@ -370,6 +370,10 @@ JEventSource::Result TelescopeZmqEventSource::Emit(JEvent &event) {
   auto received = std::move(item->message);
 
   try {
+    if (received.encoding != eic::telescope::streaming::transport::
+                                 PayloadEncoding::telescopeFlatBuffer) {
+      throw std::runtime_error("DATA payload encodingがETFBではありません");
+    }
     auto decoded =
         eic::telescope::streaming::deserializeTimeframe(received.payload);
     if (decoded.metadata.category != "events") {

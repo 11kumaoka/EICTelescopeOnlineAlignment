@@ -128,6 +128,13 @@ bash environment/run.sh python3 -B -m calibration.controller start \
   --minimum-corrections 1 --maximum-corrections 1
 ```
 
+Mille output remains file-based unless explicitly changed. Add
+`--mille-transport zeromq` to start one loopback Collector per reconstruction
+iteration. The Controller requires exact track count, EOS, durable Collector
+publication and a valid final report before it runs Pede. The Pede, Geometry
+correction, audit and convergence stages are otherwise identical. See
+[`streaming/mille/README.md`](../streaming/mille/README.md).
+
 Strict policy is the Controller default. Explicit offline diagnostic policy can
 continue only after the recognized high-chi2 Pede advisory with zero rejected
 local fits, finite estimates and independently checked full-rank equations.

@@ -63,6 +63,7 @@ Candidates remain unapproved and are never activated automatically.
 | [Linearized diagnostics](docs/LINEARIZED_DIAGNOSTICS.md) | Offline 18-parameter estimates, 42-parameter information rank and ROOT plots; no operational alignment-mode extension |
 | [Streaming serialization](streaming/serialization/README.md) | JANA/ZeroMQ-independent PODIO RawHit FlatBuffers schema, exact round trip and benchmark |
 | [Streaming ZeroMQ transport](streaming/zeromq/README.md) | Multi-event ROOT sender, acknowledged ZeroMQ transport, and JANA event source |
+| [Mille record streaming](streaming/mille/README.md) | Shared file/ZeroMQ Mille output boundary, durable Collector, Controller gate and current limitations |
 
 Simulation and Digitization live under `simulation/`. Calibration coordinates
 Reconstruction (`calibration/reconstruction/`), Alignment (`calibration/alignment/`)

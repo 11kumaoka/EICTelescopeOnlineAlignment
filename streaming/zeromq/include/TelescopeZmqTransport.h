@@ -30,6 +30,14 @@ enum class DeliveryMode {
   acknowledgedRequestReply,
 };
 
+// The transport envelope is shared by independently versioned application
+// payloads.  Keep the established Telescope timeframe value stable on wire.
+enum class PayloadEncoding : std::uint8_t {
+  none = 0,
+  telescopeFlatBuffer = 1,
+  milleRecordFlatBuffer = 2,
+};
+
 struct TransportOptions {
   std::chrono::milliseconds timeout{5000};
   std::uint64_t maxPayloadBytes{64ULL * 1024ULL * 1024ULL};
@@ -39,6 +47,10 @@ struct TransportOptions {
   // safe because the receiver validates and suppresses exact duplicates.
   int acknowledgementRetries{3};
   DeliveryMode deliveryMode{DeliveryMode::pushPull};
+  // When enabled on a protocol-v3 receiver, receiveNext() returns a validated
+  // transport message without replying. The application must call
+  // acknowledgeLast() only after it has durably accepted that message.
+  bool deferAcknowledgement{false};
 };
 
 struct ReceivedTimeframe {
@@ -56,6 +68,7 @@ struct ReceivedStreamMessage {
   std::uint64_t streamId{};
   std::uint64_t sequence{};
   std::vector<std::uint8_t> payload;
+  PayloadEncoding encoding{PayloadEncoding::none};
 };
 
 // Protocol v2 uses PUSH and sends DATA(0..N-1) followed by EOS(N). A successful
@@ -78,6 +91,10 @@ public:
   // selects unacknowledged v2 or receiver-acknowledged v3.
   void beginStream(std::uint64_t streamId);
   void sendTimeframe(std::span<const std::uint8_t> payload);
+  // Generic DATA entry point for non-timeframe FlatBuffers payloads. The
+  // reliability and sequencing rules are identical to sendTimeframe().
+  void sendPayload(std::span<const std::uint8_t> payload,
+                   PayloadEncoding encoding);
   void endStream();
 
   // Number of protocol-v3 requests resent after an ACK timeout. This remains
@@ -109,6 +126,7 @@ public:
 
   const std::string &boundEndpoint() const;
   ReceivedStreamMessage receiveNext();
+  void acknowledgeLast();
   ReceivedTimeframe receiveSingleTimeframe();
 
 private:

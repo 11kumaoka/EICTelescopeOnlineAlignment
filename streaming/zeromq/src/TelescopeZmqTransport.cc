@@ -26,11 +26,6 @@ enum class MessageKind : std::uint8_t {
   acknowledgement = 3,
 };
 
-enum class PayloadEncoding : std::uint8_t {
-  none = 0,
-  telescopeFlatBuffer = 1,
-};
-
 struct Header {
   std::uint16_t version{};
   MessageKind kind{};
@@ -69,6 +64,10 @@ void validateOptions(const TransportOptions &options) {
   if (options.deliveryMode != DeliveryMode::pushPull &&
       options.deliveryMode != DeliveryMode::acknowledgedRequestReply) {
     fail("deliveryModeが無効です");
+  }
+  if (options.deferAcknowledgement &&
+      options.deliveryMode != DeliveryMode::acknowledgedRequestReply) {
+    fail("deferAcknowledgementにはACK modeが必要です");
   }
 }
 
@@ -133,7 +132,8 @@ Header decodeHeader(const zmq::message_t &message) {
     fail("未対応のmessage kindです");
   }
   if (encoding != PayloadEncoding::none &&
-      encoding != PayloadEncoding::telescopeFlatBuffer) {
+      encoding != PayloadEncoding::telescopeFlatBuffer &&
+      encoding != PayloadEncoding::milleRecordFlatBuffer) {
     fail("未対応のpayload encodingです");
   }
   return {
@@ -338,8 +338,17 @@ void TimeframeSender::beginStream(std::uint64_t streamId) {
 }
 
 void TimeframeSender::sendTimeframe(std::span<const std::uint8_t> payload) {
+  sendPayload(payload, PayloadEncoding::telescopeFlatBuffer);
+}
+
+void TimeframeSender::sendPayload(std::span<const std::uint8_t> payload,
+                                  PayloadEncoding encoding) {
   if (m_impl->state != Impl::State::streaming) {
-    fail("sendTimeframeの前にbeginStreamが必要です");
+    fail("DATA送信の前にbeginStreamが必要です");
+  }
+  if (encoding != PayloadEncoding::telescopeFlatBuffer &&
+      encoding != PayloadEncoding::milleRecordFlatBuffer) {
+    fail("DATA payload encodingが無効です");
   }
   if (payload.empty()) {
     fail("空のFlatBuffers payloadは送信できません");
@@ -358,7 +367,7 @@ void TimeframeSender::sendTimeframe(std::span<const std::uint8_t> payload) {
             : kProtocolVersion;
     const Header header{version,
                         MessageKind::data,
-                        PayloadEncoding::telescopeFlatBuffer,
+                        encoding,
                         m_impl->streamId,
                         m_impl->nextSequence,
                         payload.size()};
@@ -474,6 +483,7 @@ public:
   Header lastAcknowledgedHeader{};
   std::vector<std::uint8_t> lastAcknowledgedPayload;
   bool hasLastAcknowledgedMessage{};
+  bool acknowledgementPending{};
   bool pendingLegacyEos{};
   bool finished{};
   bool failed{};
@@ -501,10 +511,14 @@ ReceivedStreamMessage TimeframeReceiver::receiveNext() {
   if (m_impl->failed) {
     fail("protocol error後のTimeframeReceiverは再利用できません");
   }
+  if (m_impl->acknowledgementPending) {
+    fail("前のmessageをacknowledgeLastする前にreceiveNextは呼び出せません");
+  }
   if (m_impl->pendingLegacyEos) {
     m_impl->pendingLegacyEos = false;
     m_impl->finished = true;
-    return {StreamMessageKind::endOfStream, m_impl->streamId, 1, {}};
+    return {StreamMessageKind::endOfStream, m_impl->streamId, 1, {},
+            PayloadEncoding::none};
   }
   if (m_impl->finished) {
     fail("EOS受信後にreceiveNextは呼び出せません");
@@ -567,18 +581,24 @@ ReceivedStreamMessage TimeframeReceiver::receiveNext() {
         if (acknowledged) {
           m_impl->lastAcknowledgedHeader = message.header;
           m_impl->lastAcknowledgedPayload = message.payload;
-          m_impl->hasLastAcknowledgedMessage = true;
-          sendAcknowledgement(m_impl->socket, message.header.streamId,
-                              message.header.sequence);
+          if (m_impl->options.deferAcknowledgement) {
+            m_impl->acknowledgementPending = true;
+          } else {
+            m_impl->hasLastAcknowledgedMessage = true;
+            sendAcknowledgement(m_impl->socket, message.header.streamId,
+                                message.header.sequence);
+          }
         }
         m_impl->finished = true;
         return {StreamMessageKind::endOfStream,
                 message.header.streamId,
                 message.header.sequence,
-                {}};
+                {},
+                PayloadEncoding::none};
       }
 
-      if (message.header.encoding != PayloadEncoding::telescopeFlatBuffer ||
+      if ((message.header.encoding != PayloadEncoding::telescopeFlatBuffer &&
+           message.header.encoding != PayloadEncoding::milleRecordFlatBuffer) ||
           message.payload.empty()) {
         fail("DATA messageのencodingまたはpayloadが不正です");
       }
@@ -613,12 +633,17 @@ ReceivedStreamMessage TimeframeReceiver::receiveNext() {
       if (acknowledged) {
         m_impl->lastAcknowledgedHeader = message.header;
         m_impl->lastAcknowledgedPayload = message.payload;
-        m_impl->hasLastAcknowledgedMessage = true;
-        sendAcknowledgement(m_impl->socket, message.header.streamId, sequence);
+        if (m_impl->options.deferAcknowledgement) {
+          m_impl->acknowledgementPending = true;
+        } else {
+          m_impl->hasLastAcknowledgedMessage = true;
+          sendAcknowledgement(m_impl->socket, message.header.streamId,
+                              sequence);
+        }
       }
 
       return {StreamMessageKind::data, message.header.streamId, sequence,
-              std::move(message.payload)};
+              std::move(message.payload), message.header.encoding};
     }
   } catch (const TransportTimeout &) {
     throw;
@@ -631,11 +656,40 @@ ReceivedStreamMessage TimeframeReceiver::receiveNext() {
   }
 }
 
+void TimeframeReceiver::acknowledgeLast() {
+  if (!m_impl->options.deferAcknowledgement ||
+      m_impl->options.deliveryMode !=
+          DeliveryMode::acknowledgedRequestReply) {
+    fail("acknowledgeLastはdeferred ACK mode専用です");
+  }
+  if (!m_impl->acknowledgementPending) {
+    fail("acknowledge対象のmessageがありません");
+  }
+  try {
+    sendAcknowledgement(m_impl->socket,
+                        m_impl->lastAcknowledgedHeader.streamId,
+                        m_impl->lastAcknowledgedHeader.sequence);
+    m_impl->hasLastAcknowledgedMessage = true;
+    m_impl->acknowledgementPending = false;
+  } catch (const zmq::error_t &error) {
+    m_impl->failed = true;
+    fail("deferred ACK送信に失敗しました: " +
+         std::string(error.what()));
+  } catch (...) {
+    m_impl->failed = true;
+    throw;
+  }
+}
+
 ReceivedTimeframe TimeframeReceiver::receiveSingleTimeframe() {
   auto data = receiveNext();
   if (data.kind != StreamMessageKind::data || data.sequence != 0) {
     m_impl->failed = true;
     fail("先頭messageがsequence 0のFlatBuffers DATAではありません");
+  }
+  if (data.encoding != PayloadEncoding::telescopeFlatBuffer) {
+    m_impl->failed = true;
+    fail("single timeframeのDATA encodingがETFBではありません");
   }
 
   ReceivedStreamMessage eos;

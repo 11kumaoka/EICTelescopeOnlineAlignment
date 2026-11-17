@@ -115,10 +115,19 @@ if(TELESCOPE_BUILD_MILLE_PROBE)
   target_include_directories(NativeMilleModel PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${EICRECON_INCLUDE_DIR})
   target_link_libraries(NativeMilleModel PUBLIC EICrecon::algorithms_tracking_library Acts::Core
     ${ACTS_EXAMPLES_FRAMEWORK} DD4hep::DDCore DD4hep::DDRec EDM4EIC::edm4eic)
-  add_library(TelescopeMille SHARED alignment/TelescopeMille.cc)
+  add_library(TelescopeMille SHARED
+    alignment/TelescopeMille.cc
+    alignment/MilleRecordOutput.cc)
   set_target_properties(TelescopeMille PROPERTIES PREFIX "")
   target_compile_definitions(TelescopeMille PRIVATE USE_MODERN_PODIO_GLUE=1 Acts_VERSION_MAJOR=${Acts_VERSION_MAJOR} Acts_VERSION_MINOR=${Acts_VERSION_MINOR})
   target_link_libraries(TelescopeMille PRIVATE NativeMilleModel JANA::jana2_shared_lib Mille2 nlohmann_json::nlohmann_json)
+  if(TELESCOPE_BUILD_ZMQ_TRANSPORT)
+    add_subdirectory(
+      ${CMAKE_CURRENT_SOURCE_DIR}/../../../streaming/mille
+      ${CMAKE_CURRENT_BINARY_DIR}/streaming_mille)
+    target_compile_definitions(TelescopeMille PRIVATE TELESCOPE_MILLE_ZMQ=1)
+    target_link_libraries(TelescopeMille PRIVATE TelescopeMilleStreaming)
+  endif()
   add_executable(TelescopeChannels tools/TelescopeChannels.cc)
   target_link_libraries(TelescopeChannels PRIVATE NativeMilleModel nlohmann_json::nlohmann_json spdlog::spdlog)
   add_executable(TelescopeMilleFixture ../../../validation/telescope_alignment/TelescopeMilleFixture.cc)

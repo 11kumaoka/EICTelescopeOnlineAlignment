@@ -35,7 +35,8 @@ class ControllerFixture(unittest.TestCase):
     @contextmanager
     def initialized(self, *, collections=('EventHeader', 'TelescopeChannels'), channel_count=5,
                     geant4_provenance=False, input_events=5, requested_events=5,
-                    header_offset=0, event_header_count=1, provenance_events=None):
+                    header_offset=0, event_header_count=1, provenance_events=None,
+                    mille_transport='file'):
         """Patch only external discovery and ROOT reading for a structural run."""
         self.serial += 1
         directory = self.root / str(self.serial)
@@ -65,7 +66,7 @@ class ControllerFixture(unittest.TestCase):
             build=directory, events=requested_events, chi2_cut=1000., minimum_corrections=1,
             maximum_corrections=3, max_abs_y_mm=2e-5,
             max_angular_sigma_ratio=.25, max_joint_sigma=.25,
-            max_scaled_condition=100.)
+            max_scaled_condition=100., mille_transport=mille_transport)
         if geant4_provenance:
             provenance = directory / 'producer.json'
             value = {'schema': 'native-geant4-input-v1', 'input_origin': 'geant4_digitized',
@@ -297,6 +298,7 @@ class ImmutableControllerInputs(ControllerFixture):
             controller.verify(state.run / 'input')
             controller.validate_run_inputs(state.manifest)
             self.assertEqual(state.manifest['mode'], 'l1_l2_l3_y_rx_ry_rz')
+            self.assertEqual(state.manifest['mille_transport'], 'file')
             self.assertFalse(state.manifest['geometry_activated'])
             self.assertNotIn('truth', state.manifest['input'])
             self.assertEqual(set(state.manifest['input']),
@@ -305,6 +307,11 @@ class ImmutableControllerInputs(ControllerFixture):
                              state.manifest['input']['raw_source']['sha256'])
             with self.assertRaises(FileExistsError):
                 controller.initialize(state.args)
+
+    def test_zeromq_mille_transport_is_frozen_in_the_manifest(self):
+        with self.initialized(mille_transport='zeromq') as state:
+            self.assertEqual(state.manifest['mille_transport'], 'zeromq')
+            controller.validate_run_inputs(state.manifest)
 
     def test_input_source_snapshot_and_missing_file_mutations_are_refused(self):
         for name in ('raw_source', 'raw', 'geometry_source', 'config', 'missing'):
@@ -474,7 +481,21 @@ class SimulatedControllerLifecycle(ControllerFixture):
             self.assertEqual(len(reconstructions), 2)
             self.assertEqual({value['raw'] for value in reconstructions},
                              {state.manifest['input']['raw']['path']})
+            self.assertEqual({value['mille_transport'] for value in reconstructions}, {'file'})
             self.assertNotEqual(reconstructions[0]['geometry'], reconstructions[1]['geometry'])
+
+    def test_simulated_zeromq_transport_reaches_every_fresh_reconstruction(self):
+        with self.initialized(mille_transport='zeromq') as state, \
+                self.simulated_operations(['continue', 'converged']) as calls:
+            report = controller.calibrate(state.run)
+        self.assertEqual(report['status'], 'converged')
+        reconstructions = [arguments for action, arguments in calls
+                           if action == 'reconstruct']
+        self.assertEqual(len(reconstructions), 2)
+        self.assertEqual({value['mille_transport'] for value in reconstructions},
+                         {'zeromq'})
+        self.assertNotEqual(reconstructions[0]['geometry'],
+                            reconstructions[1]['geometry'])
 
     def test_simulated_interruption_preserves_partial_and_resumes_last_checkpoint(self):
         with self.initialized() as state:
