@@ -36,6 +36,7 @@ class CheckoutMountTests(unittest.TestCase):
         self.environment = dict(os.environ, PATH=str(self.bin) + os.pathsep + os.environ["PATH"],
             LAUNCH_TEST_RECORD=str(self.record), LAUNCH_TEST_COMMON=str(self.common))
         self.environment.pop("TESTBENCH_CONTAINER", None)
+        self.environment.pop("MILLEPEDE_PREFIX", None)
 
     def run_launcher(self, *arguments):
         result = subprocess.run(["bash", "environment/run.sh", *arguments],
@@ -53,6 +54,12 @@ class CheckoutMountTests(unittest.TestCase):
         self.assertIn(str(self.checkout) + ":/work", argv)
         self.assertNotIn("--mount", argv)
         self.assertEqual(argv[-3:], ["python3", "a b.py", "$(literal)"])
+
+    def test_dependency_override_is_forwarded_literally(self):
+        self.environment['MILLEPEDE_PREFIX'] = 'external/a b/$(literal)'
+        result, calls = self.run_launcher('true')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('MILLEPEDE_PREFIX=external/a b/$(literal)', calls[0])
 
     def test_worktree_exposes_shared_git_metadata_read_only(self):
         (self.checkout / ".git").write_text("gitdir: unused-by-mock\n")

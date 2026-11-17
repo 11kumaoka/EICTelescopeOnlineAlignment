@@ -18,8 +18,13 @@ def write_json(path, value):
     with Path(path).open('x') as f: json.dump(value, f, indent=2); f.write('\n')
 
 def prefix():
-    selected = Path(os.environ.get('MILLEPEDE_PREFIX', str(REPO/'external/install'))).resolve()
-    for resource in ('cmake/MilleConfig.cmake','lib/libMille2.so','bin/pede'):
+    # One selection shared by CMake, reconstruction, Pede, and provenance.
+    # Keep relative overrides independent of the process working directory.
+    current = REPO / 'external/current'
+    default = current if current.exists() or current.is_symlink() else REPO / 'external/install'
+    selected = Path(os.environ.get('MILLEPEDE_PREFIX') or str(default))
+    selected = (selected if selected.is_absolute() else REPO / selected).resolve()
+    for resource in ('cmake/MilleConfig.cmake','lib/libMille2.so','lib/libMilleC.so','bin/pede'):
         if not (selected/resource).is_file():
             raise FileNotFoundError(f'Incomplete dependency installation: {selected/resource}; no legacy fallback is used')
     return selected

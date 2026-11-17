@@ -1,7 +1,7 @@
 """Official Pede execution and independent data-only information checks."""
 import json
 import numpy as np
-from research_common import REPO, execute, stage, done, require, write_json
+from research_common import REPO, execute, stage, done, require, write_json, prefix
 from calibration.reconstruction.operations import environment
 from calibration.alignment.pede import read_pede
 from calibration.alignment.mille import records, profile
@@ -76,7 +76,7 @@ def solve(build,output,reconstruction,mode,events,diagnostic=False):
     if rotation:
         text=f'Cfiles\n{binary}\n\nentries 5\nmethod inversion 3 0.001\n\nParameter\n'+''.join(f'{label} 0.0 1.0\n' for label in selected)+'\nprintcounts\nend\n'
     (p/'pede.txt').write_text(text)
-    execute([REPO/'external/install/bin/pede','pede.txt'],p,env=environment(build))
+    execute([prefix()/'bin/pede','pede.txt'],p,env=environment(build))
     status=(p/'millepede.end').read_text().strip()
     if status.split()[0] not in ('0','1'):raise ValueError('Pede failed: '+status)
     solver_diagnostic=None

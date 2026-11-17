@@ -1,6 +1,12 @@
 // Experimental deterministic measurement equations; no fit or Geometry update.
 #pragma once
+
+#if __has_include(<Acts/EventData/BoundTrackParameters.hpp>)
+#include <Acts/EventData/BoundTrackParameters.hpp>
+#else
 #include <Acts/EventData/TrackParameters.hpp>
+#endif
+
 #include <algorithms/tracking/ActsGeometryProvider.h>
 #include <Eigen/Cholesky>
 namespace eicrecon::telescope {

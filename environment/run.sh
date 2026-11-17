@@ -3,6 +3,7 @@
 set -euo pipefail
 repo=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)
 if [[ $# == 0 ]]; then echo 'Usage: environment/run.sh COMMAND [ARG ...]' >&2; exit 2; fi
+# Forward only the explicit shared dependency override, without shell evaluation.
 # Isolate links created by the container login environment from the repository root.
 mkdir -p "$repo/result/.environment"
 if [[ -n ${TESTBENCH_CONTAINER:-} ]]; then
@@ -16,10 +17,10 @@ if [[ -n ${TESTBENCH_CONTAINER:-} ]]; then
     exit 2
   fi
   image_id=$(docker inspect --format '{{.Image}}' "$TESTBENCH_CONTAINER")
-  exec docker exec -e TESTBENCH_IMAGE="$image_id" -w /work/result/.environment "$TESTBENCH_CONTAINER" bash -lc 'cd /work; exec "$@"' testbench "$@"
+  exec docker exec -e "MILLEPEDE_PREFIX=${MILLEPEDE_PREFIX:-}" -e TESTBENCH_IMAGE="$image_id" -w /work/result/.environment "$TESTBENCH_CONTAINER" bash -lc 'cd /work; exec "$@"' testbench "$@"
 fi
 image_ref=${TESTBENCH_IMAGE:-eicweb/eic_xl@sha256:67c914295a92396040c3051360d70786df9c1ee8458264ad0b83cd1a8ccf3d05}
-docker_args=(run --rm -e TESTBENCH_IMAGE="$image_ref" --platform "${TESTBENCH_PLATFORM:-linux/amd64}")
+docker_args=(run --rm -e "MILLEPEDE_PREFIX=${MILLEPEDE_PREFIX:-}" -e TESTBENCH_IMAGE="$image_ref" --platform "${TESTBENCH_PLATFORM:-linux/amd64}")
 if [[ -f $repo/.git ]]; then
   # A worktree's .git file points outside its checkout. Expose only the common
   # Git metadata, read-only, so source fingerprints work inside the container.

@@ -2,7 +2,13 @@
 #pragma once
 #include <Acts/Propagator/Navigator.hpp>
 #include <Acts/Definitions/Units.hpp>
+
+#if __has_include(<Acts/EventData/BoundTrackParameters.hpp>)
+#include <Acts/EventData/BoundTrackParameters.hpp>
+#else
 #include <Acts/EventData/TrackParameters.hpp>
+#endif
+
 #include <ActsExamples/EventData/IndexSourceLink.hpp>
 #include <DDRec/CellIDPositionConverter.h>
 #include <DD4hep/Segmentations.h>

@@ -18,7 +18,7 @@ import sys
 import threading
 import traceback
 
-from research_common import REPO, digest, write_json
+from research_common import REPO, digest, write_json, prefix
 from calibration.queue_manager import exclusive, recover_guard
 from calibration.runner import stage as supervised_stage
 
@@ -119,17 +119,22 @@ def build_identity(build):
                 'TelescopeChannels', 'TelescopeMilleDerivatives', 'TelescopePhysicalGeometryAudit']
     required = binaries + ['CMakeCache.txt']
     files = {str(build / name): digest(build / name) for name in required}
-    files[str(REPO / 'external/install/bin/pede')] = digest(REPO / 'external/install/bin/pede')
-    files[str(REPO / 'external/install/lib/libMille2.so')] = digest(REPO / 'external/install/lib/libMille2.so')
+    dependencies = prefix()
+    for name in ('bin/pede', 'lib/libMille2.so', 'lib/libMilleC.so'):
+        files[str(dependencies / name)] = digest(dependencies / name)
     linkage = {}
-    for name in binaries:
-        text = subprocess.check_output(['ldd', str(build / name)], env=environment(build), text=True)
+    targets = [(name, build / name) for name in binaries] + [('pede', dependencies / 'bin/pede')]
+    for name, binary in targets:
+        text = subprocess.check_output(['ldd', str(binary)], env=environment(build), text=True)
         if 'not found' in text: raise RuntimeError('Unresolved runtime dependency: ' + name)
         linkage[name] = text
         for line in text.splitlines():
             match = re.search(r'(?:=>\s+)?(/\S+)\s+\(', line)
             if match:
-                path = Path(match[1]).resolve(); files[str(path)] = digest(path)
+                path = Path(match[1]).resolve()
+                if path.name in ('libMille2.so', 'libMilleC.so') and path != (dependencies / 'lib' / path.name).resolve():
+                    raise RuntimeError('Runtime Mille dependency differs from selected prefix: ' + str(path))
+                files[str(path)] = digest(path)
     eicrecon = Path(shutil.which('eicrecon') or '').resolve()
     if not eicrecon.is_file(): raise RuntimeError('Installed EICrecon executable not found')
     files[str(eicrecon)] = digest(eicrecon)

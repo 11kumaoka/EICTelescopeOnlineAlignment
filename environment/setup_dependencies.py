@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 """Build pinned official Mille and pede in a NEW external workspace (EIC Linux container)."""
-import argparse,json,subprocess,os
+import argparse,json,subprocess,os,shutil
 from pathlib import Path
 REPO=Path(__file__).resolve().parents[1]
 p=argparse.ArgumentParser(description=__doc__)
 p.add_argument('--workspace',type=Path,default=REPO/'external',help='Must not exist')
 p.add_argument('--local-sources',type=Path,help='Optional directory of existing git clones; revisions still verified')
 p.add_argument('--jobs',type=int,default=2)
-a=p.parse_args();a.workspace=a.workspace.resolve();a.workspace.mkdir(parents=True,exist_ok=False)
+p.add_argument('--fortran-compiler',default=os.environ.get('FC') or shutil.which('gfortran'),
+               help='Compiler used for BOTH Mille and Pede (default: FC or gfortran)')
+a=p.parse_args()
+if not a.fortran_compiler:p.error('GFortran not found; set FC or --fortran-compiler to a compatible Fortran compiler')
+a.workspace=a.workspace.resolve();a.workspace.mkdir(parents=True,exist_ok=False)
 lock=json.loads((REPO/'environment/dependencies.json').read_text());prefix=a.workspace/'install'
 def run(cmd,name):
  with (a.workspace/(name+'.log')).open('x') as log:
@@ -24,7 +28,8 @@ for name,dep in lock.items():
   raise SystemExit('Local source contains modifications; clean pinned clones required')
  build=a.workspace/'build'/name
  cmd=['cmake','-S',src,'-B',build,f'-DCMAKE_INSTALL_PREFIX={prefix}',
-      '-DSUPPORT_ROOT=ON','-DBUILD_TESTS=OFF', '-DCMAKE_BUILD_TYPE=Release']
+      '-DSUPPORT_ROOT=ON','-DBUILD_TESTS=OFF', '-DCMAKE_BUILD_TYPE=Release',
+      f'-DCMAKE_Fortran_COMPILER={a.fortran_compiler}']
  if name=='millepede-ii':cmd += [f'-DMille_DIR={prefix}/cmake','-DSUPPORT_LAPACK=ON','-DSUPPORT_OPENMP=ON']
  run(cmd,name+'-configure');run(['cmake','--build',build,'-j',str(a.jobs)],name+'-build')
  run(['cmake','--install',build],name+'-install')

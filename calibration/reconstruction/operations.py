@@ -3,11 +3,11 @@ import os
 import json
 import hashlib
 import struct
-from research_common import REPO, execute, stage, done, digest
+from research_common import REPO, execute, stage, done, digest, prefix
 
 def environment(build):
     env=os.environ.copy()
-    env['LD_LIBRARY_PATH']=f'{build}:{REPO}/external/install/lib:'+env.get('LD_LIBRARY_PATH','')
+    env['LD_LIBRARY_PATH']=f'{prefix()}/lib:{build}:'+env.get('LD_LIBRARY_PATH','')
     env['JANA_PLUGIN_PATH']=str(build)+':'+env.get('JANA_PLUGIN_PATH','')
     env['PYTHONDONTWRITEBYTECODE']='1'
     return env

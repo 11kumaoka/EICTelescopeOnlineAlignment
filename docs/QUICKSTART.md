@@ -18,9 +18,36 @@ bash environment/run.sh cmake --build /work/build/telescope -j2
 
 The installer fetches the exact Mille/Millepede-II commits in
 `environment/dependencies.json` and installs only under `external/install/`.
-It refuses an existing dependency directory. Use a new checkout for a new
-installation; do not reinstall over research dependencies. CMake must use a
-new build directory rather than an inherited cache.
+It refuses an existing dependency directory and uses the same Fortran compiler
+for both projects: `FC` if set inside the container, otherwise GFortran. Use
+`--fortran-compiler` to select another compatible compiler explicitly. This
+avoids mixing compiler-specific Fortran modules; OpenMP remains enabled.
+
+CMake, reconstruction, Pede and runtime provenance share one prefix selection:
+
+1. `MILLEPEDE_PREFIX`, if set (relative paths are relative to the checkout root).
+2. `external/current`, if present, for a locally selected replacement.
+3. `external/install`, the default for a fresh clone.
+
+An incomplete selection fails; it never silently falls back to an older library.
+`external/` is ignored by Git. Do not commit dependency binaries or local paths.
+For an alternate installation, use a new workspace and pass the same override to
+both configuration and execution:
+
+```bash
+bash environment/run.sh python3 -B environment/setup_dependencies.py \
+  --workspace external/replacement
+export MILLEPEDE_PREFIX=external/replacement/install
+# Repeat the configure/build commands above and keep the override for runtime.
+```
+
+The launcher forwards `MILLEPEDE_PREFIX` into Docker. Prefer checkout-relative
+paths so the selection works with the container mount at `/work`. Remove the
+override with `unset MILLEPEDE_PREFIX`. Do not reinstall over research dependencies.
+For a fresh setup use a new build directory. After an intentional dependency
+switch, explicitly reconfigure and rebuild; do not reuse sealed run outputs.
+Dependencies must be built against the ROOT in the selected container; a binary
+built for ROOT 6.38 is not a replacement for one built for ROOT 6.40.
 
 `environment/run.sh` passes arguments without shell evaluation. Its default
 image is pinned by digest. An explicitly selected `TESTBENCH_CONTAINER` must
